@@ -10,6 +10,7 @@ public class MovementController : MonoBehaviour
     public float moveSpeed;
     public int initialTailCount;
     public KeyCode MoveForward;
+	float dx = 0;
 
     void Start()
     {
@@ -23,8 +24,9 @@ public class MovementController : MonoBehaviour
     {
 
 
-        var dx = Input.GetAxis("Horizontal");
-        var dy = Input.GetAxis("Vertical");
+		dx = Input.GetAxis ("Horizontal") * 10f +dx;
+		dx = Mathf.Clamp(dx, -50, 50);
+
 
         // forward move
 
@@ -38,13 +40,13 @@ public class MovementController : MonoBehaviour
         {
             turnSpeed = 500;
             //rigidbody.AddTorque(-transform.up*turnSpeed*counter*Input.acceleration.y*0.5, ForceMode.Impulse);
-            transform.rotation *= Quaternion.Euler(0, -Input.acceleration.y * Time.deltaTime * turnSpeed, 0);
+            //transform.rotation *= Quaternion.Euler(0, -Input.acceleration.y * Time.deltaTime * turnSpeed, 0);
         }
         else
         { // pc
             if (dx != 0)
             {
-                rigidbody.AddTorque(transform.up * turnSpeed * dx, ForceMode.Impulse); //add more variables
+				transform.rotation = Quaternion.Euler(0, dx, 0);
             }
         }
     }
