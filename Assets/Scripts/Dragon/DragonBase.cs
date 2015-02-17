@@ -11,30 +11,39 @@ public class DragonBase : MonoBehaviour {
     public List<MoveData> moves = new List<MoveData>();
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
+
+    bool inputMouseButton;
+
+
 	// Use this for initialization
 	void Start () {
 
         //ToDo needs to be loaded from a data loader
         MoveData Dash = new MoveData();
         Dash.name = "Dash";
-        Dash.cooldown = 4.0f; 
-        Dash.chargeTime = 4.0f;
+        Dash.Cooldown = 4.0f; 
+        Dash.ChargeTime = 4.0f;
         Dash.ID = 0;
         moves.Add(Dash);
-        currentMoveMethods[Dash.ID] = DashAttack;
-
+        currentMoveMethods[0] = DashAttack;
+        currentMoveMethods[1] = DashAttack;
         //Mapping the moveToAMethod
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-       
+        inputMouseButton = Input.GetMouseButton(0);
 
         if(Input.GetMouseButtonDown(0))
         {
             CastMove(0);
             
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            CastMove(1);
+
         }
 	
 	}
@@ -57,26 +66,38 @@ public class DragonBase : MonoBehaviour {
 
     IEnumerator DashAttackCo(MoveData moveData)
      {
-         if (Input.GetMouseButton(0))
+         while (true)
          {
-             moveData.currentChargeTime += 0.01f;
-             if (moveData.currentChargeTime > moveData.chargeTime)
+             
+             if (inputMouseButton)
              {
-                 Debug.Log()
-                 //
-                 //TODO Do something by design
-                 //AddForceInCurrentDirection[of head]
-                 //
+                 moveData.currentChargeTime += 0.01f;
+                 if (moveData.currentChargeTime > moveData.ChargeTime)
+                 {
+                     break;
+                     //
+                     //TODO Do something by design
+                     //AddForceInCurrentDirection[of head]
+                     //
+                 }
+                 else
+                 {
+                     Debug.Log("Charging Up" + moveData.currentChargeTime);
+                     yield return null;
+                 }
              }
-             Debug.Log(moveData.chargeTime);
+             if (!inputMouseButton)
+             {
+                 if(moveData.currentChargeTime >= 0)
+                 {
+                     moveData.currentChargeTime -= 0.01f;
+                     Debug.Log("Charging down " + moveData.currentChargeTime);
+                     yield return null;
+                    
+                 }
+                 else break;
+             }
          }
-        if(!Input.GetMouseButton(0))
-        {
-            while(moveData.currentChargeTime<=0)
-            {
-                moveData.currentChargeTime -= 0.01f;
-            }
-        }
          yield return null;
      }
 

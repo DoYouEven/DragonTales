@@ -8,9 +8,11 @@ using System.Text;
     {
        public string name;
        public int ID;
-       public float cooldown { get { return cooldown; } set { cooldown = value; currentCooldown = value; } }
+       private float cooldown;
+       private float chargeTime;
+       public float Cooldown { get { return cooldown; } set { cooldown = value; currentCooldown = value; } }
        public float currentCooldown;
-       public float chargeTime { get { return chargeTime; } set { chargeTime = value; currentChargeTime = 0; } }
+       public float ChargeTime { get { return chargeTime; } set { chargeTime = value; currentChargeTime = 0; } }
        public float currentChargeTime;
        public bool isCharging;
        public float Force;
