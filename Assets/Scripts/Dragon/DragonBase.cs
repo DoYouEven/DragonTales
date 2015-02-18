@@ -3,15 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class DragonBase : MonoBehaviour {
+public class DragonBase : MonoBehaviour
+{
 
-
+    #region DragonStuff
     public string name;
+    public int initialTailCount;
+    private GameObject tailEnd;
+    public GameObject tailPrefab;
+    public List<Tail> tails;
+    
+    #endregion
 
+
+    #region moves
     public List<MoveData> moves = new List<MoveData>();
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
-
+    #endregion
     bool inputMouseButton;
 
 
@@ -22,19 +31,71 @@ public class DragonBase : MonoBehaviour {
         MoveData Dash = new MoveData();
         Dash.name = "Dash";
         Dash.Cooldown = 4.0f; 
-        Dash.ChargeTime = 4.0f;
+        Dash.ChargeTime = 2.0f;
         Dash.ID = 0;
         moves.Add(Dash);
         currentMoveMethods[0] = DashAttack;
         currentMoveMethods[1] = DashAttack;
+
+
+
+        for (int i = 0; i < initialTailCount; i++)
+        {
+            ExtendTail();
+        }
         //Mapping the moveToAMethod
 	}
 	
+    void ExtendTail()
+    {
+        if (tailEnd == null)
+            tailEnd = this.gameObject;
+
+        //Add tail and keep track
+        GameObject newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
+       Tail tail =  newTail.GetComponent<Tail>();
+      
+        tails.Add(tail);
+        tail.tailNo = tails.Count;
+        newTail.transform.rotation = tailEnd.transform.rotation;
+        newTail.transform.localScale = tailEnd.transform.localScale - new Vector3(0.2f, 0.1f, 0);
+        Joint joint = newTail.GetComponent<HingeJoint>();
+        if (joint != null)
+        {
+            joint.connectedBody = tailEnd.rigidbody;
+            tailEnd = newTail;
+        }
+
+
+        rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
+        //moveSpeed += 0.05f;
+
+        return;
+    }
+
+    void BreakTail(int tailNo)
+    {
+        for(int i = tailNo - 1; i <=tails.Count ; i ++)
+        {
+             tails.Remove(tails[tailNo]);
+            Destroy(tails[tailNo].gameObject);
+           
+        }
+        if(tails.Count == 0)
+        {
+            tailEnd = null;
+        }
+  
+        tailEnd = tails[tailNo -1].gameObject;
+    }
 	// Update is called once per frame
 	void Update () {
 
         inputMouseButton = Input.GetMouseButton(0);
-
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            ExtendTail();
+        }
         if(Input.GetMouseButtonDown(0))
         {
             CastMove(0);
@@ -50,7 +111,11 @@ public class DragonBase : MonoBehaviour {
 
     void OnCollisionEnter(Collision hit)
     {
-
+        if (hit.gameObject.tag == "Tail")
+        {
+            BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+            ExtendTail();
+        }
     }
     void CastMove(int selectedIndex)
     {
@@ -74,6 +139,7 @@ public class DragonBase : MonoBehaviour {
                  moveData.currentChargeTime += 0.01f;
                  if (moveData.currentChargeTime > moveData.ChargeTime)
                  {
+                     rigidbody.AddForce(transform.forward *800, ForceMode.Impulse);
                      break;
                      //
                      //TODO Do something by design
