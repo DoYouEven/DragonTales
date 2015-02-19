@@ -130,6 +130,29 @@ public class DragonBase : MonoBehaviour
 
     }
 
+    void ConstraintRotation(bool constraint)
+{
+        if (constraint)
+        {
+            for (int i = 0; i < tails.Count; i++)
+            {
+                tails[i].rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+
+            }
+            gameObject.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+        else
+        {
+            for (int i = 0; i < tails.Count; i++)
+            {
+                tails[i].rigidbody.constraints = ~RigidbodyConstraints.FreezeRotation;
+
+            }
+            gameObject.rigidbody.constraints = ~RigidbodyConstraints.FreezeRotation;
+
+        }
+
+}
     IEnumerator DashAttackCo(MoveData moveData)
      {
          while (true)
@@ -140,13 +163,11 @@ public class DragonBase : MonoBehaviour
                  moveData.currentChargeTime += 0.01f;
                  if (moveData.currentChargeTime > moveData.ChargeTime)
                  {
-                     for (int i = 0; i < tails.Count; i++)
-                     {
-                         tails[i].rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-   
-                     }
-                     gameObject.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+                     ConstraintRotation(true);
                      rigidbody.AddForce(transform.forward *400, ForceMode.Impulse);
+                     yield return new WaitForSeconds(0.3f);
+
+
                      moveData.ResetCharge();
                      break;
                      //
