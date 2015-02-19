@@ -145,10 +145,10 @@ public class DragonBase : MonoBehaviour
         {
             for (int i = 0; i < tails.Count; i++)
             {
-                tails[i].rigidbody.constraints = ~RigidbodyConstraints.FreezeRotation;
+                tails[i].rigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
             }
-            gameObject.rigidbody.constraints = ~RigidbodyConstraints.FreezeRotation;
+            gameObject.rigidbody.constraints = RigidbodyConstraints.None;
 
         }
 
@@ -169,6 +169,7 @@ public class DragonBase : MonoBehaviour
 
 
                      moveData.ResetCharge();
+                     ConstraintRotation(false);
                      break;
                      //
                      //TODO Do something by design
