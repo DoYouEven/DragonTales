@@ -23,6 +23,6 @@ public class UIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        gameTimer.SetValueCurrent((int)gameController.currentTime);
+        gameTimer.SetValueCurrentF(gameController.currentTime);
 	}
 }

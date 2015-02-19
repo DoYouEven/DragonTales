@@ -31,7 +31,7 @@ public class DragonBase : MonoBehaviour
         MoveData Dash = new MoveData();
         Dash.name = "Dash";
         Dash.Cooldown = 4.0f; 
-        Dash.ChargeTime = 2.0f;
+        Dash.ChargeTime = 0.5f;
         Dash.ID = 0;
         moves.Add(Dash);
         currentMoveMethods[0] = DashAttack;
@@ -62,6 +62,7 @@ public class DragonBase : MonoBehaviour
         Joint joint = newTail.GetComponent<HingeJoint>();
         if (joint != null)
         {
+            newTail.transform.parent = tailEnd.transform;
             joint.connectedBody = tailEnd.rigidbody;
             tailEnd = newTail;
         }
@@ -139,7 +140,14 @@ public class DragonBase : MonoBehaviour
                  moveData.currentChargeTime += 0.01f;
                  if (moveData.currentChargeTime > moveData.ChargeTime)
                  {
-                     rigidbody.AddForce(transform.forward *800, ForceMode.Impulse);
+                     for (int i = 0; i < tails.Count; i++)
+                     {
+                         tails[i].rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+   
+                     }
+                     gameObject.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+                     rigidbody.AddForce(transform.forward *400, ForceMode.Impulse);
+                     moveData.ResetCharge();
                      break;
                      //
                      //TODO Do something by design

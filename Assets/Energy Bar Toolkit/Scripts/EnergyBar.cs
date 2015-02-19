@@ -17,9 +17,9 @@ public class EnergyBar : MonoBehaviour {
     // Fields
     // ===========================================================
     
-    public int valueCurrent = 50;
-    public int valueMin = 0;
-    public int valueMax = 100;
+    public float valueCurrent = 50;
+    public float valueMin = 0;
+    public float valueMax = 100;
     
     public float ValueF {
         get {
@@ -67,7 +67,10 @@ public class EnergyBar : MonoBehaviour {
     public void SetValueCurrent(int valueCurrent) {
         this.valueCurrent = valueCurrent;
     }
-    
+    public void SetValueCurrentF(float valueCurrent)
+    {
+        this.valueCurrent = valueCurrent;
+    }
     public void SetValueMin(int valueMin) {
         this.valueMin = valueMin;
     }
