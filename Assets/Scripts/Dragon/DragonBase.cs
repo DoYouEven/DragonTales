@@ -149,7 +149,7 @@ public class DragonBase : MonoBehaviour
                 tails[i].rigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
             }
-            gameObject.rigidbody.constraints = RigidbodyConstraints.None;
+            gameObject.rigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         }
 
@@ -165,7 +165,7 @@ public class DragonBase : MonoBehaviour
                  if (moveData.currentChargeTime > moveData.ChargeTime)
                  {
                      ConstraintRotation(true);
-                     rigidbody.AddForce(transform.forward *400, ForceMode.Impulse);
+                     rigidbody.AddForce(transform.forward * 1500 + new Vector3(0,0.5f,0), ForceMode.Impulse);
                      yield return new WaitForSeconds(0.3f);
 
 
