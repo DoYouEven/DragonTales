@@ -24,8 +24,8 @@ public class MovementController : MonoBehaviour
     {
 
 
-		dx = Input.GetAxis ("Horizontal") * 10f +dx;
-		dx = Mathf.Clamp(dx, -50, 50);
+        dx = Input.GetAxis("Horizontal");// *10f + dx;
+		//dx = Mathf.Clamp(dx, -50, 50);
 
 
         // forward move
@@ -35,7 +35,22 @@ public class MovementController : MonoBehaviour
             rigidbody.velocity = transform.forward * moveSpeed;
 
         // turning
-        var turnSpeed = 5;
+        var turnSpeed = 4;
+
+        if (Input.acceleration.sqrMagnitude != 0)
+        {
+            turnSpeed = 500;
+            //rigidbody.AddTorque(-transform.up*turnSpeed*counter*Input.acceleration.y*0.5, ForceMode.Impulse);
+            transform.rotation *= Quaternion.Euler(0, -Input.acceleration.y * Time.deltaTime * turnSpeed, 0);
+        }
+        else
+        { // pc
+            if (dx != 0)
+            {
+                rigidbody.AddTorque(transform.up * turnSpeed * dx, ForceMode.Impulse); //add more variables
+            }
+        }
+        /*
         if (Input.acceleration.sqrMagnitude != 0)
         {
             turnSpeed = 500;
@@ -49,6 +64,7 @@ public class MovementController : MonoBehaviour
 				transform.rotation = Quaternion.Euler(0, dx, 0);
             }
         }
+         * */
     }
 
 

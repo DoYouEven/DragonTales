@@ -74,6 +74,7 @@ public class Player : MonoBehaviour
 
         GameObject newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward , new Quaternion(0, 0, 0, 0));
         newTail.transform.rotation = tailEnd.transform.rotation;
+  
         Joint joint = newTail.GetComponent<HingeJoint>();
         if (joint != null)
         {

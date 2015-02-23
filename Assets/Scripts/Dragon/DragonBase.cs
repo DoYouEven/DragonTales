@@ -8,6 +8,7 @@ public class DragonBase : MonoBehaviour
 
     #region DragonStuff
     public string name;
+    public int playerID;
     public int initialTailCount;
     private GameObject tailEnd;
     public GameObject tailPrefab;
@@ -54,7 +55,7 @@ public class DragonBase : MonoBehaviour
         //Add tail and keep track
         GameObject newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
        Tail tail =  newTail.GetComponent<Tail>();
-      
+       tail.GetComponent<Tail>().OwnerID = playerID;
         tails.Add(tail);
         tail.tailNo = tails.Count;
         newTail.transform.rotation = tailEnd.transform.rotation;
