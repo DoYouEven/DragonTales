@@ -13,6 +13,7 @@ public class DragonBase : MonoBehaviour
     private GameObject tailEnd;
     public GameObject tailPrefab;
     public List<Tail> tails;
+	public GameObject Prefab;
     
     #endregion
 
@@ -45,6 +46,13 @@ public class DragonBase : MonoBehaviour
             ExtendTail();
         }
         //Mapping the moveToAMethod
+		var r = UnityEngine.Random.Range(0, 100);
+		if (r > 90 && GameObject.FindWithTag("Prefab") == null) {
+			var range = 3;
+			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-range, range), 1, UnityEngine.Random.Range(-range, range)), new Quaternion(0, 0,0,1));
+			
+		}
+
 	}
 	
     void ExtendTail()
@@ -118,6 +126,17 @@ public class DragonBase : MonoBehaviour
             BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
             ExtendTail();
         }
+
+		if (hit.gameObject.name == "Prefab(Clone)") {
+
+			
+			if (UnityEngine.Random.value > 0.5) {
+				
+				Destroy (hit.gameObject);
+				return;
+				
+			}
+		}
     }
     void CastMove(int selectedIndex)
     {

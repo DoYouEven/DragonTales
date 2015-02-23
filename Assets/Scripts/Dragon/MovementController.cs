@@ -10,7 +10,9 @@ public class MovementController : MonoBehaviour
     public float moveSpeed;
     public int initialTailCount;
     public KeyCode MoveForward;
+
 	float dx = 0;
+
 
     void Start()
     {
@@ -65,11 +67,13 @@ public class MovementController : MonoBehaviour
             }
         }
          * */
+
+
+	
+
     }
 
+	
 
     
-}
-
-
-
+}		
