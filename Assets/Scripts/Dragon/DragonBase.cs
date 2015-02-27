@@ -62,12 +62,13 @@ public class DragonBase : MonoBehaviour
 
         //Add tail and keep track
         GameObject newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
-       Tail tail =  newTail.GetComponent<Tail>();
-       tail.GetComponent<Tail>().OwnerID = playerID;
+        Tail tail =  newTail.GetComponent<Tail>();
+        tail.GetComponent<Tail>().OwnerID = playerID;
         tails.Add(tail);
         tail.tailNo = tails.Count;
         newTail.transform.rotation = tailEnd.transform.rotation;
-        newTail.transform.localScale = tailEnd.transform.localScale - new Vector3(0.2f, 0.1f, 0);
+		// new ojects were distorted so I changed this
+        newTail.transform.localScale = tailEnd.transform.localScale * 0.9f; //old -> // - new Vector3(0.2f, 0.1f, 0);
         Joint joint = newTail.GetComponent<HingeJoint>();
         if (joint != null)
         {
@@ -75,8 +76,7 @@ public class DragonBase : MonoBehaviour
             joint.connectedBody = tailEnd.rigidbody;
             tailEnd = newTail;
         }
-
-
+		
         rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
         //moveSpeed += 0.05f;
 
