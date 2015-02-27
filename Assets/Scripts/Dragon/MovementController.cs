@@ -49,7 +49,10 @@ public class MovementController : MonoBehaviour
         { // pc
             if (dx != 0)
             {
-                rigidbody.AddTorque(transform.up * turnSpeed * dx, ForceMode.Impulse); //add more variables
+                //rigidbody.AddTorque(transform.up * turnSpeed * dx, ForceMode.VelocityChange); //add more variables
+				// smoother turning
+				Quaternion deltaRotation = Quaternion.Euler((transform.up * turnSpeed * 50 * dx) * Time.deltaTime);
+				rigidbody.MoveRotation(rigidbody.rotation * deltaRotation);
             }
         }
         /*
