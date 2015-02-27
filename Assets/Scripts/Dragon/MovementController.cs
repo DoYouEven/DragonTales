@@ -7,6 +7,7 @@ public class MovementController : MonoBehaviour
     // Use this for initialization
     private GameObject tailEnd;
     public GameObject tailPrefab;
+	public bool alwaysMove = true;
     public float moveSpeed;
     public int initialTailCount;
     public KeyCode MoveForward;
@@ -32,9 +33,11 @@ public class MovementController : MonoBehaviour
 
         // forward move
 
-
-        if (Input.GetKey(MoveForward))
-            rigidbody.velocity = transform.forward * moveSpeed;
+		if (alwaysMove)
+			rigidbody.velocity = transform.forward * moveSpeed;
+		else
+        	if (Input.GetKey(MoveForward))
+            	rigidbody.velocity = transform.forward * moveSpeed;
 
         // turning
         var turnSpeed = 4;
