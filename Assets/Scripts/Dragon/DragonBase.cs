@@ -46,11 +46,11 @@ public class DragonBase : MonoBehaviour
             ExtendTail();
         }
         //Mapping the moveToAMethod
-		var r = UnityEngine.Random.Range(0, 100);
-		if (r > 90 && GameObject.FindWithTag("Prefab") == null) {
-			var range = 3;
-			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-range, range), 1, UnityEngine.Random.Range(-range, range)), new Quaternion(0, 0,0,1));
-			
+
+		if (GameObject.FindWithTag ("Prefab") == null){
+			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-6, 8), 1, UnityEngine.Random.Range(-10, 3)), new Quaternion(0, 0,0,1));
+
+
 		}
 
 	}
