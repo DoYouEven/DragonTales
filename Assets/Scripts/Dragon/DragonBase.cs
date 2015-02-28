@@ -204,25 +204,19 @@ public class DragonBase : MonoBehaviour
                     {
                         if (currentTail > 10) 
                         {
-                            //StartCoroutine(BreakingTail());
                             otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
                         }
                     }
                     else if (dashState == 2) 
                     {
-                        if (currentTail > 4 && currentTail <= 10) 
+                        if (currentTail > 4) 
                         {
-                            //StartCoroutine(BreakingTail());
                             otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
                         }
                     }
                     else if (dashState == 3) 
                     {
-                        if (currentTail <= 4) 
-                        {
-                            //StartCoroutine(BreakingTail());
-                            otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
-                        }
+                        otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
                     }
                 }
             } 
