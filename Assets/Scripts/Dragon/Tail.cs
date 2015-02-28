@@ -8,14 +8,16 @@ public class Tail : MonoBehaviour
 {
     public int tailNo;
     public int OwnerID;
+	public bool canEat;
 	private GameObject player;
 	private float speed;
 
 	void Start() 
 	{
-		// get the speed of the owner
-		player = GameObject.FindGameObjectWithTag (OwnerID.ToString ());
-		speed = player.GetComponent<MovementController> ().moveSpeed;
+		canEat = false;
+		// get the owner Tag and speed
+		string playerTag = "Player" + OwnerID.ToString ();
+		player = GameObject.FindGameObjectWithTag (playerTag);
 	}
 
 	void Update()
@@ -25,9 +27,28 @@ public class Tail : MonoBehaviour
 			Quaternion relative = Quaternion.Inverse (transform.parent.rotation) * transform.rotation;
 			// if the angles differ enough, move object forward
 			// gives better tail movement and control
-			if (relative.y > 0.05f || relative.y < -0.05f)
+			if ((relative.y > 0.05f || relative.y < -0.05f) && player.GetComponent<MovementController> ().isMoving) {
+				speed = player.GetComponent<MovementController> ().moveSpeed;
 				rigidbody.velocity = transform.forward * speed * 0.9f;
+			}
 		}
+	}
+
+	public void Break()
+	{
+		// can eat broken pieces for brief perioid
+		canEat = true;
+		// apply random force to scatter tail segments
+		rigidbody.AddForce(new Vector3(Random.Range (-200,200), 0, Random.Range (-200,200)));
+		// fade out and destroy
+		StartCoroutine (FadeDestroy ());
+	}
+
+	IEnumerator FadeDestroy() 
+	{
+		yield return new WaitForSeconds(4);
+		//TODO: Fadeout or particle explosion or whatever lol
+		Destroy (this.gameObject);
 	}
 
 }
