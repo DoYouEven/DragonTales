@@ -30,14 +30,23 @@ public class DragonBase : MonoBehaviour
 	void Start () {
 
         //ToDo needs to be loaded from a data loader
+
+        //*************Dash
         MoveData Dash = new MoveData();
         Dash.name = "Dash";
         Dash.Cooldown = 4.0f; 
         Dash.ChargeTime = 0.5f;
         Dash.ID = 0;
         moves.Add(Dash);
+        //***********************
+
+        MoveData Bite = new MoveData();
+        Bite.name = "Bite";
+        Bite.Cooldown = 3.0f;
+        Bite.ID = 1;
+        moves.Add(Bite);
         currentMoveMethods[0] = DashAttack;
-        currentMoveMethods[1] = DashAttack;
+        currentMoveMethods[1] = BiteAttack;
 
 
 
@@ -140,7 +149,21 @@ public class DragonBase : MonoBehaviour
     }
     void CastMove(int selectedIndex)
     {
+
+      
+    
+        /* ToDO
+         * MoveList
+         * 1) Dash
+         * 2) Bite
+         * 4) Ice Shot 
+         * 5) Fire Shot
+         * 6) Sheild  
+         * 3) Sprint( x% boost in speed)
+         */
         currentMoveMethods[moves[selectedIndex].ID].Invoke(moves[selectedIndex], selectedIndex);
+
+       
     }
 
      void DashAttack(MoveData moveData, int index)
@@ -150,6 +173,10 @@ public class DragonBase : MonoBehaviour
 
     }
 
+    void BiteAttack(MoveData moveData, int index)
+     {
+
+     }
     void ConstraintRotation(bool constraint)
 {
         if (constraint)
@@ -185,6 +212,7 @@ public class DragonBase : MonoBehaviour
                  {
                      ConstraintRotation(true);
                      rigidbody.AddForce(transform.forward * 1500 + new Vector3(0,0.5f,0), ForceMode.Impulse);
+                    //TODO state can eat
                      yield return new WaitForSeconds(0.3f);
 
 
