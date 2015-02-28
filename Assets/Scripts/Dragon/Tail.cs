@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-
 public class Tail : MonoBehaviour
 {
-    public int tailNo;
-    public int OwnerID;
+	public int tailNo;
+	public int OwnerID;
 	public bool canEat;
 	private GameObject player;
 	private float speed;
@@ -22,12 +21,14 @@ public class Tail : MonoBehaviour
 
 	void Update()
 	{
-		if (transform.parent != null) {
+		if (transform.parent != null) 
+		{
 			// calculate the relative angle between each tail segment and its parent
 			Quaternion relative = Quaternion.Inverse (transform.parent.rotation) * transform.rotation;
 			// if the angles differ enough, move object forward
 			// gives better tail movement and control
-			if ((relative.y > 0.05f || relative.y < -0.05f) && player.GetComponent<MovementController> ().isMoving) {
+			if ((relative.y > 0.05f || relative.y < -0.05f) && player.GetComponent<MovementController> ().isMoving) 
+			{
 				speed = player.GetComponent<MovementController> ().moveSpeed;
 				rigidbody.velocity = transform.forward * speed * 0.9f;
 			}

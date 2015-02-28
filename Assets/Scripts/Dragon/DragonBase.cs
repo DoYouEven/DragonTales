@@ -10,13 +10,13 @@ public class DragonBase : MonoBehaviour
     public string name;
     public int playerID;
     public int initialTailCount;
-	public float minSpeed;
+    public float minSpeed;
     private GameObject tailEnd;
     public GameObject tailPrefab;
     public List<Tail> tails;
-	public GameObject Prefab;
-	private float moveSpeed;
-	private bool isBreaking;
+    public GameObject Prefab;
+    private float moveSpeed;
+    private bool isBreaking;
     #endregion
 
 
@@ -56,12 +56,12 @@ public class DragonBase : MonoBehaviour
             ExtendTail();
         }
         //Mapping the moveToAMethod
-		var r = UnityEngine.Random.Range(0, 100);
+		/*var r = UnityEngine.Random.Range(0, 100);
 		if (r > 90 && GameObject.FindWithTag("Prefab") == null) {
 			var range = 3;
 			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-range, range), 1, UnityEngine.Random.Range(-range, range)), new Quaternion(0, 0,0,1));
 			
-		}
+		}*/
 
 	}
 	
@@ -77,7 +77,7 @@ public class DragonBase : MonoBehaviour
         tails.Add(tail);
         tail.tailNo = tails.Count - 1;
         newTail.transform.rotation = tailEnd.transform.rotation;
-		// new ojects were distorted so I changed this
+        // new ojects were distorted so I changed this
         newTail.transform.localScale = tailEnd.transform.localScale * 0.9f; //old -> // - new Vector3(0.2f, 0.1f, 0);
         Joint joint = newTail.GetComponent<HingeJoint>();
         if (joint != null)
@@ -86,44 +86,44 @@ public class DragonBase : MonoBehaviour
             joint.connectedBody = tailEnd.rigidbody;
             tailEnd = newTail;
         }
-		
+    	
         rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
         moveSpeed += 0.05f;
-		if (this.GetComponent<MovementController>().moveSpeed > minSpeed)
-			// speed depends of tail length (longer = slower)
-			this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+        if (this.GetComponent<MovementController>().moveSpeed > minSpeed)
+            // speed depends of tail length (longer = slower)
+            this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
         return;
     }
 
     void BreakTail(int tailNo)
     {
-		// remove parent and hingjoint from remainig segments
+        // remove parent and hingjoint from remainig segments
         for(int i=tailNo; i<tails.Count ; i++)
         {
-			tails [i].gameObject.transform.parent = null;
-			tails [i].gameObject.GetComponent<Tail>().OwnerID = 0;
-			Component.Destroy(tails [i].gameObject.GetComponent<HingeJoint> ());
-			tails [i].gameObject.GetComponent<Tail>().Break();
+            tails [i].gameObject.transform.parent = null;
+            tails [i].gameObject.GetComponent<Tail>().OwnerID = 0;
+            Component.Destroy(tails [i].gameObject.GetComponent<HingeJoint> ());
+            tails [i].gameObject.GetComponent<Tail>().Break();
         }
-		// update tail list
-		tails = tails.GetRange (0, tailNo);
-		// check if speed needs to be updated
-		if (Mathf.Pow(0.98f, tails.Count) * moveSpeed > minSpeed)
-			this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+        // update tail list
+        tails = tails.GetRange (0, tailNo);
+        // check if speed needs to be updated
+        if (Mathf.Pow(0.98f, tails.Count) * moveSpeed > minSpeed)
+            this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
 
-		// set new tail end
-		if(tails.Count == 0)
-			tailEnd = null;
-		else
-        	tailEnd = tails[tailNo-1].gameObject;
+        // set new tail end
+        if(tails.Count == 0)
+            tailEnd = null;
+        else
+            tailEnd = tails[tailNo-1].gameObject;
     }
 
-	// breaking cooldown
-	IEnumerator BreakingTail() 
-	{
-		yield return new WaitForSeconds(0.5f);
-		isBreaking = false;
-	}
+    // breaking cooldown
+    IEnumerator BreakingTail() 
+    {
+        yield return new WaitForSeconds(0.5f);
+        isBreaking = false;
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -148,49 +148,48 @@ public class DragonBase : MonoBehaviour
 
     void OnCollisionEnter(Collision hit)
     {
-		if (hit.gameObject.tag == "Tail")
+        if (hit.gameObject.tag == "Tail")
         {
+            // Collision with OWN tail
+            if (hit.gameObject.GetComponent<Tail>().OwnerID == playerID && tails.Count > 1 && !isBreaking) {
+                isBreaking = true;
+                StartCoroutine(BreakingTail());
+                BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+            } 
 
-			// Collision with OWN tail
-			if (hit.gameObject.GetComponent<Tail>().OwnerID == playerID && tails.Count > 1 && !isBreaking) {
-				isBreaking = true;
-				StartCoroutine(BreakingTail());
-				BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
-			} 
-
-			// Eat a broken tail piece
-			if (hit.gameObject.GetComponent<Tail>().canEat && !isBreaking) {
-				Destroy (hit.gameObject);
-				ExtendTail();
-			} 
-			// TODO: Collision with enemy tail while Dashing
+            // Eat a broken tail piece
+            if (hit.gameObject.GetComponent<Tail>().canEat && !isBreaking) {
+                Destroy (hit.gameObject);
+                ExtendTail();
+            } 
+            // TODO: Collision with enemy tail while Dashing
         }
 
-		// collision with other player's head
-		else if (hit.gameObject.tag == "Player1" || hit.gameObject.tag == "Player2")
-		{ 
-			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
-			if (relative.y > 0)
-				rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
-			else
-				rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
-		}
+        // collision with other player's head
+        else if (hit.gameObject.tag == "Player1" || hit.gameObject.tag == "Player2")
+        { 
+            Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+            if (relative.y > 0)
+                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+            else
+                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
+        }
 
-		// collision with obstacle
-		else if (hit.gameObject.tag == "Obstacle")
+        // collision with obstacle
+        else if (hit.gameObject.tag == "Obstacle")
             Destroy(this.gameObject);
 
-		////
-		if (hit.gameObject.name == "Prefab(Clone)") {
+        ////
+        if (hit.gameObject.name == "Prefab(Clone)") {
 
-			
-			if (UnityEngine.Random.value > 0.5) {
-				
-				Destroy (hit.gameObject);
-				return;
-				
-			}
-		}
+        	
+            if (UnityEngine.Random.value > 0.5) {
+
+                Destroy (hit.gameObject);
+                return;
+
+            }
+        }
     }
     void CastMove(int selectedIndex)
     {
