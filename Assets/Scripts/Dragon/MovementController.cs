@@ -8,6 +8,7 @@ public class MovementController : MonoBehaviour
     private GameObject tailEnd;
     public GameObject tailPrefab;
     public bool alwaysMove = true;
+    public bool isDashing;
     public bool isMoving = false;
     public float moveSpeed;
     public int initialTailCount;
@@ -32,7 +33,7 @@ public class MovementController : MonoBehaviour
         //dx = Mathf.Clamp(dx, -50, 50);
 
         // forward movement
-        if (alwaysMove) {
+        if (alwaysMove || isDashing) {
             rigidbody.velocity = transform.forward * moveSpeed;
             isMoving = true;
         } else if (Input.GetKey (MoveForward)) {

@@ -15,17 +15,24 @@ public class DragonBase : MonoBehaviour
     public GameObject tailPrefab;
     public List<Tail> tails;
     public GameObject Prefab;
+    public bool canDash = true;
     private float moveSpeed;
+    private float normalSpeed;
+    private float sprintSpeed;
+    private float frozenSpeed;
     private bool isBreaking;
     #endregion
-
 
     #region moves
     public List<MoveData> moves = new List<MoveData>();
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
     #endregion
-    bool inputMouseButton;
+    bool inputMouseButton, inputDashButton;
+
+    #region DragonStates
+    private int dashState = 0;   // 0=no dash, 1=weak, 2=medium, 3=strong
+    #endregion
 
 
 	// Use this for initialization
@@ -51,6 +58,10 @@ public class DragonBase : MonoBehaviour
         currentMoveMethods[1] = BiteAttack;
 
 		moveSpeed = this.GetComponent<MovementController> ().moveSpeed;
+        normalSpeed = moveSpeed;
+        sprintSpeed = moveSpeed + 15;
+        frozenSpeed = moveSpeed - 8;
+
         for (int i = 0; i < initialTailCount; i++)
         {
             ExtendTail();
@@ -93,14 +104,14 @@ public class DragonBase : MonoBehaviour
         }
     	
         rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
-        moveSpeed += 0.05f;
+        //moveSpeed += 0.05f;
         if (this.GetComponent<MovementController>().moveSpeed > minSpeed)
             // speed depends of tail length (longer = slower)
             this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
         return;
     }
 
-    void BreakTail(int tailNo)
+    public void BreakTail(int tailNo)
     {
         // remove parent and hingjoint from remainig segments
         for(int i=tailNo; i<tails.Count ; i++)
@@ -134,13 +145,16 @@ public class DragonBase : MonoBehaviour
 	void Update () {
 
         inputMouseButton = Input.GetMouseButton(0);
+        inputDashButton = Input.GetKey("s");
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             ExtendTail();
         }
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("s"))
         {
-            CastMove(0);
+            if (canDash)
+                CastMove(0);
             
         }
         if (Input.GetMouseButtonDown(1))
@@ -167,7 +181,51 @@ public class DragonBase : MonoBehaviour
                 Destroy (hit.gameObject);
                 ExtendTail();
             } 
-            // TODO: Collision with enemy tail while Dashing
+            // collision with enemy tail while not dashing
+            if (hit.gameObject.GetComponent<Tail>().OwnerID != playerID && !hit.gameObject.GetComponent<Tail>().canEat && dashState == 0) 
+            {
+                Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+                if (relative.y > 0)
+                    rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+                else
+                    rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
+            }
+
+            // Collision with enemy tail while Dashing
+            if (hit.gameObject.GetComponent<Tail>().OwnerID != playerID && !isBreaking) {
+                if (dashState > 0) 
+                {
+                    isBreaking = true;
+                    int currentTail = hit.gameObject.GetComponent<Tail>().tailNo;
+                    string playerTag = "Player" + hit.gameObject.GetComponent<Tail>().OwnerID.ToString ();
+                    GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
+                    StartCoroutine(BreakingTail());
+                    if (dashState == 1) 
+                    {
+                        if (currentTail > 10) 
+                        {
+                            //StartCoroutine(BreakingTail());
+                            otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                        }
+                    }
+                    else if (dashState == 2) 
+                    {
+                        if (currentTail > 4 && currentTail <= 10) 
+                        {
+                            //StartCoroutine(BreakingTail());
+                            otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                        }
+                    }
+                    else if (dashState == 3) 
+                    {
+                        if (currentTail <= 4) 
+                        {
+                            //StartCoroutine(BreakingTail());
+                            otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                        }
+                    }
+                }
+            } 
         }
 
         // collision with other player's head
@@ -249,17 +307,102 @@ public class DragonBase : MonoBehaviour
     {
         while (true)
         {
-         
             if (inputMouseButton)
             {
                 moveData.currentChargeTime += 0.01f;
+
+                // slow down while charging
+                if (this.GetComponent<MovementController>().moveSpeed > 0)
+                    this.GetComponent<MovementController>().moveSpeed -= 0.15f;
+
+                // Strong Dash
+                if (moveData.currentChargeTime > moveData.ChargeTime)
+                {
+                    dashState = 3;
+                    // move the player if they are stopped
+                    GetComponent<MovementController>().isDashing = true;
+
+                    // increase the speed
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed + 13;
+
+                    yield return new WaitForSeconds(0.5f);
+
+                    // set speed back to normal
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    dashState = 0;
+                    GetComponent<MovementController>().isDashing = false;
+
+                    moveData.ResetCharge();
+                    break;
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+            if (!inputMouseButton)
+            {
+                // Weak dash
+                if (moveData.currentChargeTime >= moveData.ChargeTime/3 && moveData.currentChargeTime < (moveData.ChargeTime * 2)/3)
+                {
+                    dashState = 1;
+                    // move the player if they are stopped
+                    GetComponent<MovementController>().isDashing = true;
+                    // increase the speed
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed + 7;
+
+                    yield return new WaitForSeconds(0.5f);
+
+                    // set speed back to normal
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    dashState = 0;
+                    GetComponent<MovementController>().isDashing = false;
+
+                    moveData.ResetCharge();
+                    break;
+                }
+                // Medium dash
+                else if (moveData.currentChargeTime >= (moveData.ChargeTime * 2)/3 && moveData.currentChargeTime < moveData.ChargeTime)
+                {
+                    dashState = 2;
+                    // move the player if they are stopped
+                    GetComponent<MovementController>().isDashing = true;
+                    // increase the speed
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed + 10;
+
+                    yield return new WaitForSeconds(0.5f);
+
+                    // set speed back to normal
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    dashState = 0;
+                    GetComponent<MovementController>().isDashing = false;
+
+                    moveData.ResetCharge();
+                    break;
+                }
+                else  
+                {
+                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    moveData.ResetCharge();
+                    break;
+                }
+            }
+
+            /* OLD DASH
+            if (inputMouseButton)
+            {
+                moveData.currentChargeTime += 0.01f;
+                // slow down while charging
+                if (this.GetComponent<MovementController>().moveSpeed > 0)
+                    this.GetComponent<MovementController>().moveSpeed -= 0.1f;
                 if (moveData.currentChargeTime > moveData.ChargeTime)
                 {
                     ConstraintRotation(true);
                     rigidbody.AddForce(transform.forward * 1500 + new Vector3(0,0.5f,0), ForceMode.Impulse);
-                    //TODO state can eat
-                    yield return new WaitForSeconds(0.3f);
 
+                    yield return new WaitForSeconds(0.5f);
+
+                    // set speed back to normal
 
                     moveData.ResetCharge();
                     ConstraintRotation(false);
@@ -285,7 +428,7 @@ public class DragonBase : MonoBehaviour
                     
                 }
                 else break;
-            }
+            }*/
         }
         yield return null;
     }
