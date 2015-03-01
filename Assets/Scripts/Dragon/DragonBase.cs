@@ -22,6 +22,11 @@ public class DragonBase : MonoBehaviour
     private float sprintSpeed;
     private float frozenSpeed;
     private bool isBreaking;
+
+
+    //****New protoType
+    public GameObject bodyPrefab;
+    public GameObject finalTail;
     #endregion
 
     #region moves
@@ -89,6 +94,7 @@ public class DragonBase : MonoBehaviour
         for (int i = 0; i < initialTailCount; i++)
         {
             ExtendTail();
+            //ExtendTailProtoType();
         }
 
         //Mapping the moveToAMethod
@@ -104,8 +110,39 @@ public class DragonBase : MonoBehaviour
 		}*/
 
 	}
-	
-    void ExtendTail()
+   // public abstract void ExtendTail();
+    public void ExtendTailProtoType()
+    {
+        if (tailEnd == null)
+            tailEnd = this.gameObject;
+
+        //Add tail and keep track
+        GameObject newBodyPrefab = (GameObject)Instantiate(bodyPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
+        Tail tail = newBodyPrefab.GetComponent<Tail>();
+        tail.GetComponent<Tail>().OwnerID = playerID;
+        tails.Add(tail);
+        tail.tailNo = tails.Count - 1;
+        newBodyPrefab.transform.rotation = newBodyPrefab.transform.rotation;
+        // new ojects were distorted so I changed this
+        //newTail.transform.localScale = tailEnd.transform.localScale * 0.9f; //old -> // - new Vector3(0.2f, 0.1f, 0);
+        Joint joint = newBodyPrefab.GetComponent<HingeJoint>();
+        if (joint != null)
+        {
+            newBodyPrefab.transform.parent = tailEnd.transform;
+            joint.connectedBody = tailEnd.rigidbody;
+            tailEnd = newBodyPrefab;
+            finalTail.GetComponent<HingeJoint>().connectedBody = tailEnd.rigidbody; 
+            
+        }
+
+        rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
+        //moveSpeed += 0.05f;
+        if (this.GetComponent<MovementController>().moveSpeed > minSpeed)
+            // speed depends of tail length (longer = slower)
+            this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+        return;
+    }
+    public void ExtendTail()
     {
         if (tailEnd == null)
             tailEnd = this.gameObject;
@@ -118,13 +155,14 @@ public class DragonBase : MonoBehaviour
         tail.tailNo = tails.Count - 1;
         newTail.transform.rotation = tailEnd.transform.rotation;
         // new ojects were distorted so I changed this
-        newTail.transform.localScale = tailEnd.transform.localScale * 0.9f; //old -> // - new Vector3(0.2f, 0.1f, 0);
+        //newTail.transform.localScale = tailEnd.transform.localScale * 0.9f; //old -> // - new Vector3(0.2f, 0.1f, 0);
         Joint joint = newTail.GetComponent<HingeJoint>();
         if (joint != null)
         {
             newTail.transform.parent = tailEnd.transform;
             joint.connectedBody = tailEnd.rigidbody;
             tailEnd = newTail;
+            
         }
     	
         rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
