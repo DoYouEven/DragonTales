@@ -27,6 +27,7 @@ public class DragonBase : MonoBehaviour
     public List<MoveData> moves = new List<MoveData>();
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
+    public bool hasBitePowerup;
     #endregion
     bool inputMouseButton, inputDashButton;
 
@@ -49,11 +50,14 @@ public class DragonBase : MonoBehaviour
         moves.Add(Dash);
         //***********************
 
+        //*************Bite
         MoveData Bite = new MoveData();
         Bite.name = "Bite";
-        Bite.Cooldown = 3.0f;
+        Bite.Cooldown = 4.0f;
         Bite.ID = 1;
         moves.Add(Bite);
+        //***********************
+
         currentMoveMethods[0] = DashAttack;
         currentMoveMethods[1] = BiteAttack;
 
@@ -167,13 +171,25 @@ public class DragonBase : MonoBehaviour
 
     void OnCollisionEnter(Collision hit)
     {
+        //**********Tail collisions
         if (hit.gameObject.tag == "Tail")
         {
+            int currentTail = hit.gameObject.GetComponent<Tail>().tailNo;
+            string playerTag = "Player" + hit.gameObject.GetComponent<Tail>().OwnerID.ToString ();
+
             // Collision with OWN tail
             if (hit.gameObject.GetComponent<Tail>().OwnerID == playerID && tails.Count > 1 && !isBreaking) {
                 isBreaking = true;
                 StartCoroutine(BreakingTail());
                 BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+            } 
+
+            // Bite powerup
+            if (hasBitePowerup && hit.gameObject.GetComponent<Tail>().OwnerID != 0) {
+                GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
+                otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                Destroy (hit.gameObject);
+                ExtendTail();
             } 
 
             // Eat a broken tail piece
@@ -192,26 +208,35 @@ public class DragonBase : MonoBehaviour
             }
 
             // Collision with enemy tail while Dashing
-            if (hit.gameObject.GetComponent<Tail>().OwnerID != playerID && !isBreaking) {
+            if (hit.gameObject.GetComponent<Tail>().OwnerID != playerID && !isBreaking && hit.gameObject.GetComponent<Tail>().OwnerID != 0) {
                 if (dashState > 0) 
                 {
                     isBreaking = true;
-                    int currentTail = hit.gameObject.GetComponent<Tail>().tailNo;
-                    string playerTag = "Player" + hit.gameObject.GetComponent<Tail>().OwnerID.ToString ();
+                    Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
                     GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
                     StartCoroutine(BreakingTail());
                     if (dashState == 1) 
                     {
                         if (currentTail > 10) 
-                        {
                             otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                        else
+                        {
+                            if (relative.y > 0)
+                                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+                            else
+                                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
                         }
                     }
                     else if (dashState == 2) 
                     {
                         if (currentTail > 4) 
-                        {
                             otherPlayer.GetComponent<DragonBase> ().BreakTail(hit.gameObject.GetComponent<Tail>().tailNo);
+                        else
+                        {
+                            if (relative.y > 0)
+                                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+                            else
+                                rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
                         }
                     }
                     else if (dashState == 3) 
@@ -220,6 +245,14 @@ public class DragonBase : MonoBehaviour
                     }
                 }
             } 
+        }
+        //****************************
+
+        //**********Bite power up collision
+        else if (hit.gameObject.tag == "BitePowerUp")
+        {
+            Destroy(hit.gameObject);
+            CastMove(1);
         }
 
         // collision with other player's head
@@ -264,14 +297,13 @@ public class DragonBase : MonoBehaviour
     }
 
     void DashAttack(MoveData moveData, int index)
-    {
-         
+    { 
         StartCoroutine(DashAttackCo(moveData));
     }
 
     void BiteAttack(MoveData moveData, int index)
     {
-
+        StartCoroutine(BiteAttackCo(moveData));
     }
 
     void ConstraintRotation(bool constraint)
@@ -322,7 +354,11 @@ public class DragonBase : MonoBehaviour
                     yield return new WaitForSeconds(0.5f);
 
                     // set speed back to normal
-                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    if (Mathf.Pow(0.98f, tails.Count) * moveSpeed > minSpeed)
+                        this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    else
+                        this.GetComponent<MovementController>().moveSpeed = minSpeed;
+
                     dashState = 0;
                     GetComponent<MovementController>().isDashing = false;
 
@@ -348,7 +384,11 @@ public class DragonBase : MonoBehaviour
                     yield return new WaitForSeconds(0.5f);
 
                     // set speed back to normal
-                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    if (Mathf.Pow(0.98f, tails.Count) * moveSpeed > minSpeed)
+                        this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    else
+                        this.GetComponent<MovementController>().moveSpeed = minSpeed;
+
                     dashState = 0;
                     GetComponent<MovementController>().isDashing = false;
 
@@ -367,7 +407,11 @@ public class DragonBase : MonoBehaviour
                     yield return new WaitForSeconds(0.5f);
 
                     // set speed back to normal
-                    this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    if (Mathf.Pow(0.98f, tails.Count) * moveSpeed > minSpeed)
+                        this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed;
+                    else
+                        this.GetComponent<MovementController>().moveSpeed = minSpeed;
+                    
                     dashState = 0;
                     GetComponent<MovementController>().isDashing = false;
 
@@ -425,5 +469,19 @@ public class DragonBase : MonoBehaviour
             }*/
         }
         yield return null;
+    }
+
+    IEnumerator BiteAttackCo(MoveData moveData)
+    {
+        hasBitePowerup = true;
+        canDash = false;
+        Color oldcolor = renderer.material.color;
+        Color newcolor = oldcolor;
+        newcolor = new Color(1, 0.8f, 0);
+        renderer.material.color = newcolor;
+        yield return new WaitForSeconds(moveData.Cooldown);
+        renderer.material.color = oldcolor;
+        hasBitePowerup = false;
+        canDash = true;
     }
 }
