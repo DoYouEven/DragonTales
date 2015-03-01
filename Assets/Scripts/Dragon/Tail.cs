@@ -17,6 +17,18 @@ public class Tail : MonoBehaviour
 		// get the owner Tag and speed
 		string playerTag = "Player" + OwnerID.ToString ();
 		player = GameObject.FindGameObjectWithTag (playerTag);
+		// set color
+		Color color = renderer.material.color;
+		if (tailNo > 4 && tailNo <= 10) 
+		{
+			color.g = color.g * 0.75f;
+			renderer.material.color = color;
+		}
+		else if (tailNo > 10) 
+		{
+			color.g = color.g * 0.5f;
+			renderer.material.color = color;
+		}
 	}
 
 	void Update()
