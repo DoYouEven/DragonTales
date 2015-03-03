@@ -50,87 +50,71 @@ public class DragonBase : MonoBehaviour
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
     public bool hasBitePowerup;
-    public void AddMoveByID(int id)
+    void AddMoveByID(int id)
     {
         MoveAssetData Data = moveAssetDatabase.GetByID(id);
         MoveData Dash = new MoveData();
         Dash.name = Data.Name;
         Dash.Cooldown = Data.Cooldown;
-        Dash.ChargeTime = Data.ChargeTime;
-        Dash.ID = Data.ID;
-        Dash.VFXPrefab = Data.VFXPrefab;
-        Dash.icon = Data.icon;
+        Dash.ChargeTime = Data.ID;
+        Dash.ID = 0;
+        Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
         moves.Add(Dash);
-        //onPowerup(Dash);
-    }
-    public void RemoveMove(MoveData move)
-    {
-        //OnPowerUpUse(
-       if(moves.Contains(move))
-       {
-           moves.Remove(move);
-       }
-        //onPowerup(Dash);
+        onPowerup(Dash);
     }
     #endregion
     // Use this for initialization
 	void Start () {
 		moveAssetDatabase = GameController.instance.moveAssetDatabase;
 		//ToDo needs to be loaded from a data loader
-
-        for (int i = 0; i < 5; i++)
-        {
-            AddMoveByID(i);
-        }
-            /*
-            //*************Dash
-            MoveData Dash = new MoveData();
-            Dash.name = "Dash";
-            Dash.Cooldown = 4.0f; 
-            Dash.ChargeTime = 0.5f;
-            Dash.ID = 0;
-            Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
-            moves.Add(Dash);
-            onPowerup(Dash);
-            //***********************
 		
-            //*************Bite
-            MoveData Bite = new MoveData();
-            Bite.name = "Bite";
-            Bite.Cooldown = 4.0f;
-            Bite.ID = 1;
-            moves.Add(Bite);
-            //***********************
+		//*************Dash
+		MoveData Dash = new MoveData();
+		Dash.name = "Dash";
+		Dash.Cooldown = 4.0f; 
+		Dash.ChargeTime = 0.5f;
+		Dash.ID = 0;
+		Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
+		moves.Add(Dash);
+		onPowerup(Dash);
+		//***********************
 		
-            //*************Sprint
-            MoveData Sprint = new MoveData();
-            Sprint.name = "Sprint";
-            Sprint.Cooldown = 4.0f;
-            Sprint.ID = 2;
-            moves.Add(Sprint);
-            //***********************
+		//*************Bite
+		MoveData Bite = new MoveData();
+		Bite.name = "Bite";
+		Bite.Cooldown = 4.0f;
+		Bite.ID = 1;
+		moves.Add(Bite);
+		//***********************
 		
-            //*************Ice
-            MoveData Ice = new MoveData();
-            Ice.name = "Ice";
-            Ice.Cooldown = 4.0f;
-            Ice.ID = 3;
-            Ice.VFXPrefab = moveAssetDatabase.GetByID(Ice.ID).VFXPrefab;
-            moves.Add(Ice);
+		//*************Sprint
+		MoveData Sprint = new MoveData();
+		Sprint.name = "Sprint";
+		Sprint.Cooldown = 4.0f;
+		Sprint.ID = 2;
+		moves.Add(Sprint);
+		//***********************
+		
+		//*************Ice
+		MoveData Ice = new MoveData();
+        Ice.name = "Ice";
+		Ice.Cooldown = 4.0f;
+		Ice.ID = 3;
+        Ice.VFXPrefab = moveAssetDatabase.GetByID(Ice.ID).VFXPrefab;
+        moves.Add(Ice);
         
-            //***********************
+		//***********************
 
-            //*************Fire
-            MoveData Fire = new MoveData();
-            Fire.name = "Fire";
-            Fire.Cooldown = 4.0f;
-            Fire.ID = 4;
-            Fire.VFXPrefab = moveAssetDatabase.GetByID(Fire.ID).VFXPrefab;
-            moves.Add(Fire);
+        //*************Fire
+        MoveData Fire = new MoveData();
+        Fire.name = "Fire";
+        Fire.Cooldown = 4.0f;
+        Fire.ID = 4;
+        Fire.VFXPrefab = moveAssetDatabase.GetByID(Fire.ID).VFXPrefab;
+        moves.Add(Fire);
 
-             */
-            //***********************
-            currentMoveMethods[0] = DashAttack;
+        //***********************
+		currentMoveMethods[0] = DashAttack;
 		currentMoveMethods[1] = BiteAttack;
 		currentMoveMethods[2] = SprintAttack;
 		currentMoveMethods[3] = IceAttack;

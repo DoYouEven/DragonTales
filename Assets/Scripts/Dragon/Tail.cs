@@ -8,7 +8,7 @@ public class Tail : MonoBehaviour
 	public int tailNo;
 	public int OwnerID;
 	public bool canEat;
-	private GameObject player;
+	public GameObject player;
 	private float speed;
 
 	void Start() 

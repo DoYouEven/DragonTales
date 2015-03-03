@@ -33,7 +33,12 @@ public class DragonBase : MonoBehaviour
 	public KeyCode DashAttackKey;
 	#endregion
 	
-	
+	#region moves
+	public List<MoveData> moves = new List<MoveData>();
+	private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
+	public Powerup p;
+	public bool hasBitePowerup;
+	#endregion
 	bool inputMouseButton, inputDashButton;
 	
 	#region DragonStates
@@ -45,96 +50,56 @@ public class DragonBase : MonoBehaviour
 	public  delegate void EventPowerup(MoveData moveData);
 	public event EventPowerup onPowerup = new EventPowerup((MoveData moveData) => { });  //UI event broadcasting
 	#endregion
-    #region Moves
-    public List<MoveData> moves = new List<MoveData>();
-    private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
-    public Powerup p;
-    public bool hasBitePowerup;
-    public void AddMoveByID(int id)
-    {
-        MoveAssetData Data = moveAssetDatabase.GetByID(id);
-        MoveData Dash = new MoveData();
-        Dash.name = Data.Name;
-        Dash.Cooldown = Data.Cooldown;
-        Dash.ChargeTime = Data.ChargeTime;
-        Dash.ID = Data.ID;
-        Dash.VFXPrefab = Data.VFXPrefab;
-        Dash.icon = Data.icon;
-        moves.Add(Dash);
-        //onPowerup(Dash);
-    }
-    public void RemoveMove(MoveData move)
-    {
-        //OnPowerUpUse(
-       if(moves.Contains(move))
-       {
-           moves.Remove(move);
-       }
-        //onPowerup(Dash);
-    }
-    #endregion
-    // Use this for initialization
+	
+	
+	
+	// Use this for initialization
 	void Start () {
 		moveAssetDatabase = GameController.instance.moveAssetDatabase;
 		//ToDo needs to be loaded from a data loader
-
-        for (int i = 0; i < 5; i++)
-        {
-            AddMoveByID(i);
-        }
-            /*
-            //*************Dash
-            MoveData Dash = new MoveData();
-            Dash.name = "Dash";
-            Dash.Cooldown = 4.0f; 
-            Dash.ChargeTime = 0.5f;
-            Dash.ID = 0;
-            Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
-            moves.Add(Dash);
-            onPowerup(Dash);
-            //***********************
 		
-            //*************Bite
-            MoveData Bite = new MoveData();
-            Bite.name = "Bite";
-            Bite.Cooldown = 4.0f;
-            Bite.ID = 1;
-            moves.Add(Bite);
-            //***********************
+		//*************Dash
+		MoveData Dash = new MoveData();
+		Dash.name = "Dash";
+		Dash.Cooldown = 4.0f; 
+		Dash.ChargeTime = 0.5f;
+		Dash.ID = 0;
+		Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
+		moves.Add(Dash);
+		onPowerup(Dash);
+		//***********************
 		
-            //*************Sprint
-            MoveData Sprint = new MoveData();
-            Sprint.name = "Sprint";
-            Sprint.Cooldown = 4.0f;
-            Sprint.ID = 2;
-            moves.Add(Sprint);
-            //***********************
+		//*************Bite
+		MoveData Bite = new MoveData();
+		Bite.name = "Bite";
+		Bite.Cooldown = 4.0f;
+		Bite.ID = 1;
+		moves.Add(Bite);
+		//***********************
 		
-            //*************Ice
-            MoveData Ice = new MoveData();
-            Ice.name = "Ice";
-            Ice.Cooldown = 4.0f;
-            Ice.ID = 3;
-            Ice.VFXPrefab = moveAssetDatabase.GetByID(Ice.ID).VFXPrefab;
-            moves.Add(Ice);
+		//*************Sprint
+		MoveData Sprint = new MoveData();
+		Sprint.name = "Sprint";
+		Sprint.Cooldown = 4.0f;
+		Sprint.ID = 2;
+		moves.Add(Sprint);
+		//***********************
+		
+		//*************Ice
+		MoveData Ice = new MoveData();
+		Ice.name = "Sprint";
+		Ice.Cooldown = 4.0f;
+		Ice.ID = 3;
+        Ice.VFXPrefab = moveAssetDatabase.GetByID(Ice.ID).VFXPrefab;
+        moves.Add(Ice);
         
-            //***********************
-
-            //*************Fire
-            MoveData Fire = new MoveData();
-            Fire.name = "Fire";
-            Fire.Cooldown = 4.0f;
-            Fire.ID = 4;
-            Fire.VFXPrefab = moveAssetDatabase.GetByID(Fire.ID).VFXPrefab;
-            moves.Add(Fire);
-
-             */
-            //***********************
-            currentMoveMethods[0] = DashAttack;
+		//***********************
+		
+		currentMoveMethods[0] = DashAttack;
 		currentMoveMethods[1] = BiteAttack;
 		currentMoveMethods[2] = SprintAttack;
 		currentMoveMethods[3] = IceAttack;
-        currentMoveMethods[4] = FireAttack;
+		
 		moveSpeed = this.GetComponent<MovementController> ().moveSpeed;
 		normalSpeed = moveSpeed;
 		sprintSpeed = moveSpeed + 15;
@@ -330,10 +295,6 @@ public class DragonBase : MonoBehaviour
 		{
 			CastMove(3);
 		}
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            CastMove(4);
-        }
 		
 	}
 	
@@ -489,20 +450,12 @@ public class DragonBase : MonoBehaviour
 	
 	void IceAttack(MoveData moveData, int index)
 	{
-        GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);
+        GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.5f +transform.up*1.5f, transform.rotation);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
 		ice.GetComponent<IceBullet>().ownerID = playerID;
         ice.GetComponent<IceBullet>().tag = gameObject.tag;
 		hasIce = false;
 	}
-    void FireAttack(MoveData moveData, int index)
-    {
-        GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
-        //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
-        Fire.GetComponent<IceBullet>().ownerID = playerID;
-        Fire.GetComponent<IceBullet>().tag = gameObject.tag;
-        hasIce = false;
-    }
 	
 	void ConstraintRotation(bool constraint)
 	{
