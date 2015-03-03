@@ -5,8 +5,8 @@ Shader "Effects/Distortion/CutOutCullOff" {
         _BumpMap ("Normalmap", 2D) = "bump" {}
 		_CutoutTex ("Cutout Texture (R)", 2D) = "white" {}
 		_ColorStrength ("Color Strength", Float) = 1
+		_DistortIllum ("Distortion illumination", Float) = 1
 		_BumpAmt ("Distortion", range (0, 100)) = 10
-		
 }
 
 SubShader {
@@ -26,6 +26,7 @@ sampler2D _CutoutTex;
 
 float _BumpAmt;
 float _ColorStrength;
+float _DistortIllum;
 sampler2D _GrabTexture;
 float4 _GrabTexture_TexelSize;
 
@@ -59,11 +60,11 @@ void surf (Input IN, inout SurfaceOutput o) {
 		half4 col = tex2Dproj(_GrabTexture, UNITY_PROJ_COORD(IN.proj));
 
 		fixed4 tex = tex2D(_MainTex, IN.uv_MainTex) * _Color;
-		o.Emission = col.xyz + tex*_ColorStrength;
+		o.Emission = col + tex*_ColorStrength;
         o.Alpha = _Color.a * tex2D(_CutoutTex, IN.uv_CutoutTex).a;
 }
 ENDCG
 }
 
-FallBack "Effects/Distortion/Free/CutOutCullOff"
+FallBack "Reflective/Bumped Diffuse"
 }

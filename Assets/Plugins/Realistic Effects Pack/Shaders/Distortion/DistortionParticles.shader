@@ -10,7 +10,7 @@ Properties {
 
 SubShader {
         Tags { "Queue"="Transparent+1" "RenderType"="Transperent" }
-		GrabPass {Name "_GrabTexture"}	
+		GrabPass {"_GrabTexture"}	
         LOD 200
 		ZWrite On
 		Cull Back
@@ -57,7 +57,7 @@ void surf (Input IN, inout SurfaceOutput o) {
 		half4 col = tex2Dproj(_GrabTexture, UNITY_PROJ_COORD(IN.proj));
 
 		fixed4 tex = tex2D(_MainTex, IN.uv_MainTex) * IN.color;
-		o.Emission = col.xyz * IN.color + tex*_ColorStrength * _TintColor;
+		o.Emission = col.xyz * IN.color + tex*_ColorStrength;
         o.Alpha = _TintColor.a * IN.color.a;
 }
 ENDCG

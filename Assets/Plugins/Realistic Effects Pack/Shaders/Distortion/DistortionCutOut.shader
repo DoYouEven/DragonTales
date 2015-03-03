@@ -15,7 +15,7 @@ SubShader {
         LOD 200
 		ZWrite On
 		Cull Off
-		
+
 CGPROGRAM
 
 #pragma surface surf Lambert alpha vertex:vert
@@ -65,5 +65,5 @@ void surf (Input IN, inout SurfaceOutput o) {
 ENDCG
 }
 
-FallBack "Effects/Distortion/Free/CutOutCullOff"
+FallBack "Reflective/Bumped Diffuse"
 }
