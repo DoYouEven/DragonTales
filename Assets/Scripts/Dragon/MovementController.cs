@@ -41,6 +41,7 @@ public class MovementController : MonoBehaviour
             isMoving = true;
         } else 
             isMoving = false;
+		
 
         // turning
         var turnSpeed = 4;

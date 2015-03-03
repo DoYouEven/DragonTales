@@ -18,16 +18,24 @@ public class Tail : MonoBehaviour
 		string playerTag = "Player" + OwnerID.ToString ();
 		player = GameObject.FindGameObjectWithTag (playerTag);
 		// set color
-		Color color = renderer.material.color;
+		if (OwnerID == 2) {
+			Color colorM = transform.GetChild(0).GetChild(0).renderer.material.color;
+			colorM.r = colorM.r * 0.5f;
+			colorM.b = colorM.b * 1.5f;
+			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
+		}
+
+		Color color = transform.GetChild(0).GetChild(0).renderer.material.color;
 		if (tailNo > 4 && tailNo <= 10) 
 		{
-			color.g = color.g * 0.75f;
-			renderer.material.color = color;
+			color.r = color.r * 0.75f;
+			transform.GetChild(0).GetChild(0).renderer.material.color = color;
 		}
 		else if (tailNo > 10) 
 		{
-			color.g = color.g * 0.5f;
-			renderer.material.color = color;
+			color.r = color.r * 0.5f;
+			color.g = color.g * 0.6f;
+			transform.GetChild(0).GetChild(0).renderer.material.color = color;
 		}
 	}
 
