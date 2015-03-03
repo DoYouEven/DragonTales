@@ -81,6 +81,7 @@ public class MoveSlot :IconSlot
         if (moveInfo == null)
             return false;
 
+        this.Assign(moveInfo.icon);
         // Use the base class assign
         //if (this.Assign(moveInfo.IconName)) // *************** Needs to check for string
         //{

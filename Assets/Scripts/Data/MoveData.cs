@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using UnityEngine;
+
 
 
    public class MoveData
     {
        public string name;
+       public Texture icon;
        public int ID;
        private float cooldown;
        private float chargeTime;
+       
        public float Cooldown { get { return cooldown; } set { cooldown = value; currentCooldown = value; } }
        public float currentCooldown;
        public float ChargeTime { get { return chargeTime; } set { chargeTime = value; currentChargeTime = 0; } }

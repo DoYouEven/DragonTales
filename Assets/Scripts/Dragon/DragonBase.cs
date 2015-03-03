@@ -27,6 +27,7 @@ public class DragonBase : MonoBehaviour
     //****New protoType
     public GameObject bodyPrefab;
     public GameObject finalTail;
+   private MoveAssetDatabase moveAssetDatabase;
     #endregion
 
     #region moves
@@ -42,10 +43,16 @@ public class DragonBase : MonoBehaviour
     private bool hasIce;
     #endregion
 
+    #region events
+    public  delegate void EventPowerup(MoveData moveData);
+    public event EventPowerup onPowerup = new EventPowerup((MoveData moveData) => { });  //UI event broadcasting
+#endregion
 
-	// Use this for initialization
+
+
+    // Use this for initialization
 	void Start () {
-
+        moveAssetDatabase = GameController.instance.moveAssetDatabase;
         //ToDo needs to be loaded from a data loader
 
         //*************Dash
@@ -54,7 +61,9 @@ public class DragonBase : MonoBehaviour
         Dash.Cooldown = 4.0f; 
         Dash.ChargeTime = 0.5f;
         Dash.ID = 0;
+        Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
         moves.Add(Dash);
+        onPowerup(Dash);
         //***********************
 
         //*************Bite
@@ -93,8 +102,8 @@ public class DragonBase : MonoBehaviour
 
         for (int i = 0; i < initialTailCount; i++)
         {
-            ExtendTail();
-            //ExtendTailProtoType();
+            //ExtendTail();
+            ExtendTailProtoType();
         }
 
         //Mapping the moveToAMethod
@@ -131,8 +140,10 @@ public class DragonBase : MonoBehaviour
             newBodyPrefab.transform.parent = tailEnd.transform;
             joint.connectedBody = tailEnd.rigidbody;
             tailEnd = newBodyPrefab;
-            finalTail.GetComponent<HingeJoint>().connectedBody = tailEnd.rigidbody; 
-            
+
+           //Final Tail Readjustment
+            finalTail.GetComponent<HingeJoint>().connectedBody = tailEnd.rigidbody;
+            finalTail.transform.position = tailEnd.transform.position - tailEnd.transform.forward;
         }
 
         rigidbody.mass++; // make the head weight greater so it can carry it's tail... lol
