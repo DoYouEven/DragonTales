@@ -18,7 +18,7 @@ public class PlayerUI : MonoBehaviour
         }
 
         dragonBase.onPowerup += AssignPowerUp;
-        //dragonBase.onPowerupUse += UnAssignPowerup;
+        dragonBase.onPowerupUse += UnAssignPowerup;
     }
 
 

@@ -31,14 +31,15 @@ public class DragonBase : MonoBehaviour
 	public GameObject finalTail;
 	private MoveAssetDatabase moveAssetDatabase;
 	#endregion
-
-	#region controls
-	public KeyCode DashAttackKey;
-	public KeyCode BiteAttackKey;
-	public KeyCode ShieldKey;
-	public KeyCode SprintKey;
-	public KeyCode IceAttackKey;
-	public KeyCode FireAttackKey;
+  
+    
+    #region controls
+    public KeyCode Skill1;
+    public KeyCode Skill2;
+    public KeyCode Skill3;
+    public KeyCode Skill4;
+    public KeyCode Skill5;
+    public KeyCode Skill6;
 	#endregion
 
     #region mesh
@@ -57,10 +58,13 @@ public class DragonBase : MonoBehaviour
 	
 	#region events
 	public  delegate void EventPowerup(MoveData moveData);
+    public delegate void EventPowerupUse(int index);
 	public event EventPowerup onPowerup = new EventPowerup((MoveData moveData) => { });  //UI event broadcasting
+    public event EventPowerupUse onPowerupUse = new EventPowerupUse((int index) => { }); 
 	#endregion
     #region Moves
     public List<MoveData> moves = new List<MoveData>();
+    public PlayerUI playerUI;
 	public bool shielded;
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
@@ -76,7 +80,11 @@ public class DragonBase : MonoBehaviour
         Dash.VFXPrefab = Data.VFXPrefab;
         Dash.icon = Data.icon;
         moves.Add(Dash);
-        //onPowerup(Dash);
+        onPowerup(Dash);
+    }
+    public void RemoveMove(int index)
+    {
+
     }
     public void RemoveMove(MoveData move)
     {
@@ -95,7 +103,8 @@ public class DragonBase : MonoBehaviour
 		DashTrail = transform.Find ("DashTrail").gameObject;
 		FireTrail = transform.Find ("FireTrail").gameObject;
 		oldColor = DashTrail.transform.Find ("Trail").particleSystem.startColor;
-        for (int i = 0; i < 6; i++)
+      
+        for (int i = 1; i < 6; i++)
         {
             AddMoveByID(i);
         }
@@ -345,29 +354,39 @@ public class DragonBase : MonoBehaviour
 	void Update () {
 		
 		//inputMouseButton = Input.GetMouseButton(0);
-		inputMouseButton = Input.GetKey (DashAttackKey);
+		inputMouseButton = Input.GetKey (Skill1);
 		
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			ExtendTail2();
 		}
-		if(Input.GetKeyDown(DashAttackKey))
+		if(Input.GetKeyDown(Skill1))
 		{
-			if (canDash)
-				CastMove(0);
+            if (canDash)
+                DashAttack(moves[0], 0);
 		}
-		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(IceAttackKey))
+		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill2))
 		{
-			CastMove(3);
+			CastMove(0);
 		}
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(FireAttackKey))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill3))
+        {
+            CastMove(1);
+        }
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill4))
+        {
+            CastMove(2);
+			shielded = true;
+        }
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill5))
+        {
+            CastMove(3);
+            shielded = true;
+        }
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill6))
         {
             CastMove(4);
-        }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(ShieldKey))
-        {
-            CastMove(5);
-			shielded = true;
+            shielded = true;
         }
 		
 	}
@@ -505,7 +524,7 @@ public class DragonBase : MonoBehaviour
 	void CastMove(int selectedIndex)
 	{
 		
-		/* ToDO
+		/* ToDO.
          * MoveList
          * 1) DONE - Dash
          * 2) DONE - Bite
@@ -514,7 +533,14 @@ public class DragonBase : MonoBehaviour
          * 5) Fire Shot
          * 6) Sheild  
          */
-		currentMoveMethods[moves[selectedIndex].ID].Invoke(moves[selectedIndex], selectedIndex);
+        if (playerUI.moveSlots[selectedIndex].isAssigned)
+        { 
+        MoveData data = playerUI.moveSlots[selectedIndex].moveInfo;
+
+        currentMoveMethods[data.ID].Invoke(data, selectedIndex);
+        }
+
+		//currentMoveMethods[moves[selectedIndex].ID].Invoke(moves[selectedIndex], selectedIndex);
 	}
 	
 	void DashAttack(MoveData moveData, int index)
@@ -524,22 +550,24 @@ public class DragonBase : MonoBehaviour
 	
 	void BiteAttack(MoveData moveData, int index)
 	{
-		StartCoroutine(BiteAttackCo(moveData));
+		StartCoroutine(BiteAttackCo(moveData,index));
 	}
 	
 	void SprintAttack(MoveData moveData, int index)
 	{
-		StartCoroutine(SprintAttackCo(moveData));
+        StartCoroutine(SprintAttackCo(moveData, index));
 	}
 	
     void Sheild(MoveData moveData, int index)
     {
-        StartCoroutine(SheildCo(moveData));
+        StartCoroutine(SheildCo(moveData,index));
        BasicMesh.SetActive(false);
        SheildMesh.SetActive(true);
+
     }
-    IEnumerator SheildCo(MoveData moveData)
+    IEnumerator SheildCo(MoveData moveData,int index)
     {
+        playerUI.moveSlots[index].Unassign();
         BasicMesh.SetActive(false);
         SheildMesh.SetActive(true);
         for (int i = 0; i < tails.Count; i++ )
@@ -567,6 +595,7 @@ public class DragonBase : MonoBehaviour
 		ice.GetComponent<IceBullet> ().type = ProjectileType.Ice;
         ice.GetComponent<IceBullet>().tag = gameObject.tag;
 		hasIce = false;
+        playerUI.moveSlots[index].Unassign();
 	}
     void FireAttack(MoveData moveData, int index)
     {
@@ -576,6 +605,7 @@ public class DragonBase : MonoBehaviour
 		Fire.GetComponent<IceBullet> ().type = ProjectileType.Fire;
         Fire.GetComponent<IceBullet>().tag = gameObject.tag;
         hasIce = false;
+        playerUI.moveSlots[index].Unassign();
     }
 	
 	void ConstraintRotation(bool constraint)
@@ -763,8 +793,9 @@ public class DragonBase : MonoBehaviour
 			this.GetComponent<MovementController>().moveSpeed = minSpeed;
 	}
 	
-	IEnumerator BiteAttackCo(MoveData moveData)
+	IEnumerator BiteAttackCo(MoveData moveData,int index)
 	{
+        playerUI.moveSlots[index].Unassign();
 		hasBitePowerup = true;
 		canDash = false;
 		Color oldcolor = transform.GetChild(0).GetChild(0).renderer.material.color;
@@ -777,8 +808,9 @@ public class DragonBase : MonoBehaviour
 		canDash = true;
 	}
 	
-	IEnumerator SprintAttackCo(MoveData moveData)
+	IEnumerator SprintAttackCo(MoveData moveData,int index)
 	{
+        playerUI.moveSlots[index].Unassign();
 		canDash = false;
 		GetComponent<MovementController>().isDashing = true;
 		dashState = 3;

@@ -9,7 +9,7 @@ public class MoveAssetData
     public float ChargeTime;
     public float Cooldown;
     public Texture icon;
-    public string audioClipName;
+    public AudioClip audioClipName;
     public GameObject VFXPrefab;
     public GameObject PowerUpPrefab;
     public GameObject MoveUI;

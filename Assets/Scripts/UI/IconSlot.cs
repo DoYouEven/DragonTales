@@ -119,7 +119,7 @@ public class IconSlot : UIDragDropItem
             return false;
 
         // Unassign this slot
-        this.Unassign();
+        //this.Unassign();
        isAssigned = true;
         // Set the icon
         this.SetIcon(icon);

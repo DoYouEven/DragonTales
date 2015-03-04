@@ -15,10 +15,11 @@ public class BasePowerup : MonoBehaviour {
         //currentMoveMethods[Dash.ID] = DashAttack;
 	}
 
-    void OnCollisionEnter(Collision hit)
+    void OnTriggerEnter(Collider hit)
     {
 		if(hit.collider.tag == "Player1" || hit.collider.tag == "Player2")
         {
+            Destroy(this.collider);
             GameObject go = hit.gameObject;
 
             go.GetComponent<DragonBase>().AddMoveByID(moveID);

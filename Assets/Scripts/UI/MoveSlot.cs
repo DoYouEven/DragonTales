@@ -7,7 +7,7 @@ public class MoveSlot :IconSlot
 {
     public CooldownController cooldownController;
     public GameObject SlotFrame;
-    private MoveData moveInfo;
+    public  MoveData moveInfo;
     public int slotID;
     private static Dictionary<int, MoveSlot> slots = new Dictionary<int, MoveSlot>();
 
@@ -129,6 +129,18 @@ public class MoveSlot :IconSlot
         isAssigned = false;
         // Clear the spell info
         this.moveInfo = null;
+
+        // Check if we have a cooldown handler
+        if (this.cooldownController != null)
+            this.cooldownController.OnUnassign();
+    }
+    public  void UnassignIcon()
+    {
+        // Remove the icon
+        base.Unassign();
+        isAssigned = false;
+        // Clear the spell info
+        //this.moveInfo = null;
 
         // Check if we have a cooldown handler
         if (this.cooldownController != null)

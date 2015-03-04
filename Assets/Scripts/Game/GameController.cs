@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
 	public float MaxGameTime = 60;
 	public MoveAssetDatabase moveAssetDatabase;
 	public GameObject player1, player2;
-
+    public AudioSource audioClip;
 	public static GameController instance;
 	void Awake()
 	{
@@ -19,10 +19,12 @@ public class GameController : MonoBehaviour
 			Debug.Log("Please Attach players to gamecontroller");
 		}
 		instance = this;
+        audioClip.Play();
 	}
 
 	void Start()
 	{
+      
 		StartCoroutine (Winner ());
 	}
 
