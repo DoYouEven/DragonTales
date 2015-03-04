@@ -10,7 +10,8 @@ public class Tail : MonoBehaviour
 	public bool canEat;
 	public GameObject player;
 	private float speed;
-
+    public GameObject BasicMesh;
+    public GameObject SheildMesh;
 	void Start() 
 	{
 		canEat = false;

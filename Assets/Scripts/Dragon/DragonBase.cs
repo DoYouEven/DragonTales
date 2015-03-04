@@ -32,9 +32,15 @@ public class DragonBase : MonoBehaviour
 	#region controls
 	public KeyCode DashAttackKey;
 	#endregion
-	
-	
-	bool inputMouseButton, inputDashButton;
+
+    #region mesh
+    public GameObject BasicMesh;
+    public GameObject SheildMesh;
+    #endregion
+    #region VFX
+    public GameObject collisionVFX;
+    #endregion
+    bool inputMouseButton, inputDashButton;
 	
 	#region DragonStates
 	private int dashState = 0;   // 0=no dash, 1=weak, 2=medium, 3=strong
@@ -78,7 +84,7 @@ public class DragonBase : MonoBehaviour
 		moveAssetDatabase = GameController.instance.moveAssetDatabase;
 		//ToDo needs to be loaded from a data loader
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 6; i++)
         {
             AddMoveByID(i);
         }
@@ -135,6 +141,7 @@ public class DragonBase : MonoBehaviour
 		currentMoveMethods[2] = SprintAttack;
 		currentMoveMethods[3] = IceAttack;
         currentMoveMethods[4] = FireAttack;
+        currentMoveMethods[5] = Sheild;
 		moveSpeed = this.GetComponent<MovementController> ().moveSpeed;
 		normalSpeed = moveSpeed;
 		sprintSpeed = moveSpeed + 15;
@@ -334,6 +341,10 @@ public class DragonBase : MonoBehaviour
         {
             CastMove(4);
         }
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            CastMove(5);
+        }
 		
 	}
 	
@@ -349,6 +360,7 @@ public class DragonBase : MonoBehaviour
 			// Collision with OWN tail
 			if (ownerID == playerID && tails.Count > 1 && !isBreaking) {
 				isBreaking = true;
+                Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 				StartCoroutine(BreakingTail());
 				BreakTail(currentTail);
 			} 
@@ -487,6 +499,32 @@ public class DragonBase : MonoBehaviour
 		StartCoroutine(SprintAttackCo(moveData));
 	}
 	
+    void Sheild(MoveData moveData, int index)
+    {
+        StartCoroutine(SheildCo(moveData));
+       BasicMesh.SetActive(false);
+       SheildMesh.SetActive(true);
+    }
+    IEnumerator SheildCo(MoveData moveData)
+    {
+        BasicMesh.SetActive(false);
+        SheildMesh.SetActive(true);
+        for (int i = 0; i < tails.Count; i++ )
+        {
+            tails[i].BasicMesh.SetActive(false);
+            tails[i].SheildMesh.SetActive(true);
+        }
+            yield return new WaitForSeconds(3.0f);
+        BasicMesh.SetActive(true);
+        SheildMesh.SetActive(false);
+        for (int i = 0; i < tails.Count; i++)
+        {
+            tails[i].BasicMesh.SetActive(true);
+            tails[i].SheildMesh.SetActive(false);
+        }
+        yield return null;
+
+    }
 	void IceAttack(MoveData moveData, int index)
 	{
         GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);

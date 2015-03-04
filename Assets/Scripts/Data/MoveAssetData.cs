@@ -11,6 +11,7 @@ public class MoveAssetData
     public Texture icon;
     public string audioClipName;
     public GameObject VFXPrefab;
+    public GameObject PowerUpPrefab;
     public GameObject MoveUI;
 
 }
