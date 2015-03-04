@@ -10,6 +10,7 @@ public class MoveSlot :IconSlot
     private MoveData moveInfo;
     public int slotID;
     private static Dictionary<int, MoveSlot> slots = new Dictionary<int, MoveSlot>();
+
     void Awake()
     {
         if (slots.ContainsKey(this.slotID))
@@ -80,7 +81,8 @@ public class MoveSlot :IconSlot
     {
         if (moveInfo == null)
             return false;
-
+        isAssigned = true;
+        this.moveInfo = moveInfo;
         this.Assign(moveInfo.icon);
         // Use the base class assign
         //if (this.Assign(moveInfo.IconName)) // *************** Needs to check for string
@@ -124,7 +126,7 @@ public class MoveSlot :IconSlot
     {
         // Remove the icon
         base.Unassign();
-
+        isAssigned = false;
         // Clear the spell info
         this.moveInfo = null;
 

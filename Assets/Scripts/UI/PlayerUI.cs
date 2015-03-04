@@ -18,7 +18,7 @@ public class PlayerUI : MonoBehaviour
         }
 
         dragonBase.onPowerup += AssignPowerUp;
-        
+        dragonBase.onPowerupUse += UnAssignPowerup;
     }
 
 
@@ -26,12 +26,17 @@ public class PlayerUI : MonoBehaviour
     {
         for(int i=0 ;i< moveSlots.Count; i++)
         {
-            if(moveSlots[i].IsAssigned() == false)
+            if(moveSlots[i].isAssigned == false)
             {
-                moveSlots[i].Assign(moveData.icon);
+                moveSlots[i].Assign(moveData);
+                //moveSlots[i].Assign(moveData.icon);
                 break;
             }
         }
+    }
+    void UnAssignPowerup(int id)
+    {
+        moveSlots[id].Unassign();
     }
     // Update is called once per frame
     void Update()

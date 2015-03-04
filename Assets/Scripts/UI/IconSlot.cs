@@ -44,9 +44,9 @@ public class IconSlot : UIDragDropItem
     public float pressEffectSpeed = 0.15f;
     public bool pressEffectInstaOut = true;
     private bool IsPressed = false;
-
+    public bool isAssigned = false;
     private Object sourceSlot;
-
+    public int MoveID;
     protected override void Start()
     {
         this.mTrans = this.transform;
@@ -120,7 +120,7 @@ public class IconSlot : UIDragDropItem
 
         // Unassign this slot
         this.Unassign();
-
+       isAssigned = true;
         // Set the icon
         this.SetIcon(icon);
 
