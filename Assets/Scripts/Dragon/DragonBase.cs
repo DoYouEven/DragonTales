@@ -475,8 +475,11 @@ public class DragonBase : MonoBehaviour
 		}
 		
 		// collision with obstacle
-		else if (hit.gameObject.tag == "Obstacle")
-			Destroy(this.gameObject);
+		else if (hit.gameObject.tag == "Obstacle") {
+			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+			Deflect(relative);
+			BreakTail(1);
+		}
 		
 		////
 		if (hit.gameObject.name == "Prefab(Clone)") {
