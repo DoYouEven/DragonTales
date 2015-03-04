@@ -162,12 +162,23 @@ public class DragonBase : MonoBehaviour
 			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
 		}
 
+		var r = UnityEngine.Random.Range (0, 4);
+		
+		if ((GameObject.FindWithTag ("IcePowerUp") == null) || (GameObject.FindWithTag("BitPowerUp") == null))
+		{
+			Instantiate(moveAssetDatabase.GetByID(r).PowerUpPrefab, new Vector3(160, 1, 150), Quaternion.identity);
+			Debug.Log("here");
+			Debug.Log (moveAssetDatabase.GetByID(r).Name);
+		
+		}
+
+
 		//Mapping the moveToAMethod
-		if (GameObject.FindWithTag ("Prefab") == null)
+		/*if (GameObject.FindWithTag ("Prefab") == null)
 		{
 			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-6, 8), 1, UnityEngine.Random.Range(-10, 3)), new Quaternion(0, 0,0,1));
 		}
-		/*var r = UnityEngine.Random.Range(0, 100);
+		var r = UnityEngine.Random.Range(0, 100);
 		if (r > 90 && GameObject.FindWithTag("Prefab") == null) {
 			var range = 3;
 			Instantiate(Prefab, new Vector3(UnityEngine.Random.Range(-range, range), 1, UnityEngine.Random.Range(-range, range)), new Quaternion(0, 0,0,1));
