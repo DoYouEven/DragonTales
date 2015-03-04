@@ -270,16 +270,17 @@ public class DragonBase : MonoBehaviour
 
 		// scale each segment smaller as the tail grows
 		if (tail.tailNo > 2) {
-			Vector3 newScale = new Vector3(newTail.transform.GetChild(0).transform.localScale.x * Mathf.Pow (0.97f, tails.Count),
-			                               newTail.transform.GetChild(0).transform.localScale.y * Mathf.Pow (0.97f, tails.Count),
-			                               newTail.transform.GetChild(0).transform.localScale.z);
+			// tail segment scale
+			Vector3 newScale = new Vector3(newTail.transform.Find ("Mid").transform.localScale.x * Mathf.Pow (0.97f, tails.Count),
+			                               newTail.transform.Find ("Mid").transform.localScale.y * Mathf.Pow (0.97f, tails.Count),
+			                               newTail.transform.Find ("Mid").transform.localScale.z);
 
-			newTail.transform.GetChild(0).transform.localScale = newScale; //old -> // - new Vector3(0.2f, 0.1f, 0);
-
-			Vector3 newScale2 = new Vector3(newTail.transform.GetChild(0).GetChild(1).transform.localScale.x * Mathf.Pow (0.97f, tails.Count),
-			                                newTail.transform.GetChild(0).GetChild(1).transform.localScale.y * Mathf.Pow (0.97f, tails.Count),
-			                                newTail.transform.GetChild(0).GetChild(1).transform.localScale.z * Mathf.Pow (0.97f, tails.Count));
-			newTail.transform.GetChild(0).GetChild(1).transform.localScale = newScale2;
+			newTail.transform.Find ("Mid").transform.localScale = newScale; //old -> // - new Vector3(0.2f, 0.1f, 0);
+			// adjust sphere scale
+			Vector3 newScale2 = new Vector3(newTail.transform.Find ("Mid/Joint").transform.localScale.x * Mathf.Pow (0.97f, tails.Count),
+			                                newTail.transform.Find ("Mid/Joint").transform.localScale.y * Mathf.Pow (0.97f, tails.Count),
+			                                newTail.transform.Find ("Mid/Joint").transform.localScale.z * Mathf.Pow (0.97f, tails.Count));
+			newTail.transform.Find ("Mid/Joint").transform.localScale = newScale2;
 		}
 
 		newTail.transform.rotation = tailEnd.transform.rotation;
@@ -400,6 +401,7 @@ public class DragonBase : MonoBehaviour
 			if (ownerID != playerID && !isBreaking && ownerID != 0) {
 				if (dashState > 0) 
 				{
+					Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 					isBreaking = true;
 					GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
 					Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
@@ -583,7 +585,7 @@ public class DragonBase : MonoBehaviour
 			if (inputMouseButton)
 			{
 				moveData.currentChargeTime += 0.01f;
-				
+
 				// slow down while charging
 				if (this.GetComponent<MovementController>().moveSpeed > 0)
 					this.GetComponent<MovementController>().moveSpeed -= 0.1f;
@@ -715,17 +717,22 @@ public class DragonBase : MonoBehaviour
 		canDash = false;
 		GetComponent<MovementController>().isDashing = true;
 		dashState = 3;
-		Color oldcolor = transform.GetChild(0).GetChild(0).renderer.material.color;
-		Color newcolor = oldcolor;
-		newcolor = new Color(0.1f, 0.1f, 0.1f);
-		transform.GetChild(0).GetChild(0).renderer.material.color = newcolor;
 
 		IncreaseSpeed(6); 
+
+		// set partivle effects
+		GameObject DashTrail = transform.Find ("DashTrail").gameObject;
+		GameObject FireTrail = transform.Find ("FireTrail").gameObject;
+		DashTrail.SetActive (true);
+		FireTrail.SetActive (false);
+		DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
+
 		yield return new WaitForSeconds(moveData.Cooldown);
+		DashTrail.SetActive (false);
+		FireTrail.SetActive (true);
 		ResetSpeed();
 
 		GetComponent<MovementController>().isDashing = false;
-		transform.GetChild(0).GetChild(0).renderer.material.color = oldcolor;
 		canDash = true;
 		dashState = 0;
 	}

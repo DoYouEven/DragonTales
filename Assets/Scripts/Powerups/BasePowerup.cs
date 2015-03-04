@@ -22,7 +22,7 @@ public class BasePowerup : MonoBehaviour {
 
     void onColliderHit(Collision hit)
     {
-        if(hit.collider.tag == "Player")
+		if(hit.collider.tag == "Player1" || hit.collider.tag == "Player2")
         {
             GameObject go = hit.gameObject;
 
