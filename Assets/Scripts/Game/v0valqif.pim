@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 
 
@@ -13,13 +12,6 @@ public class GameController : MonoBehaviour
 	public GameObject player1, player2;
     public AudioSource audioClip;
 	public static GameController instance;
-    public UILabel clock;
-    public GameObject GameOverPanel;
-    public List<GameObject> WinnerPanel;
-    private bool gameover = false;
-    public float minutes = 1;
-    public float seconds = 0;
-    float miliseconds = 0;
 	void Awake()
 	{
 		if(player1 == null || player2 == null)
@@ -38,27 +30,8 @@ public class GameController : MonoBehaviour
 
 	void Update()
 	{
-        if (!gameover)
-        {
-      
-             if(miliseconds <= 0){
-                 if(seconds <= 0){
-                     minutes--;
-                     seconds = 59;
-                 }
-                 else if(seconds >= 0){
-                     seconds--;
-                 }
-                 
-                 miliseconds = 100;
-             }
-             
-             miliseconds -= Time.deltaTime * 100;
-             
-             //Debug.Log(string.Format("{0}:{1}:{2}", minutes, seconds, (int)miliseconds));
-             clock.text = string.Format("{0}:{1}:{2}", minutes, seconds, (int)miliseconds);
-          
-        }
+		MaxGameTime -= Time.deltaTime;
+        int min = Mathf.Floor(currentTime)
 	}
 
 	IEnumerator Winner() 
@@ -66,16 +39,15 @@ public class GameController : MonoBehaviour
 		yield return new WaitForSeconds (MaxGameTime);
 		int p1Tails = player1.GetComponent<DragonBase> ().tails.Count;
 		int p2Tails = player2.GetComponent<DragonBase> ().tails.Count;
-        GameOverPanel.SetActive(true);
+
 		if (p1Tails > p2Tails) {
 			Debug.Log ("Player 1 Wins!");
-            WinnerPanel[0].SetActive(true);
+			// TODO: display who wins
 		} 
 		else if (p1Tails < p2Tails) 
 		{
 			Debug.Log ("Player 2 Wins!");
-            WinnerPanel[1].SetActive(true);
-
+			// TODO: display who wins	
 		}
 		else
 		{
