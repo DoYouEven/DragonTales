@@ -66,6 +66,7 @@ public class GameController : MonoBehaviour
 		yield return new WaitForSeconds (MaxGameTime);
 		int p1Tails = player1.GetComponent<DragonBase> ().tails.Count;
 		int p2Tails = player2.GetComponent<DragonBase> ().tails.Count;
+        gameover = true;
         GameOverPanel.SetActive(true);
 		if (p1Tails > p2Tails) {
 			Debug.Log ("Player 1 Wins!");
