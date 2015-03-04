@@ -34,6 +34,11 @@ public class DragonBase : MonoBehaviour
 
 	#region controls
 	public KeyCode DashAttackKey;
+	public KeyCode BiteAttackKey;
+	public KeyCode ShieldKey;
+	public KeyCode SprintKey;
+	public KeyCode IceAttackKey;
+	public KeyCode FireAttackKey;
 	#endregion
 
     #region mesh
@@ -351,15 +356,15 @@ public class DragonBase : MonoBehaviour
 			if (canDash)
 				CastMove(0);
 		}
-		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha3))
+		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(IceAttackKey))
 		{
 			CastMove(3);
 		}
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha4))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(FireAttackKey))
         {
             CastMove(4);
         }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha5))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(ShieldKey))
         {
             CastMove(5);
 			shielded = true;
