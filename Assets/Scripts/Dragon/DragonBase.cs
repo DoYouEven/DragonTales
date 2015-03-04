@@ -22,6 +22,9 @@ public class DragonBase : MonoBehaviour
 	private float sprintSpeed;
 	private float frozenSpeed;
 	private bool isBreaking;
+	private GameObject DashTrail;
+	private GameObject FireTrail;
+	private Color oldColor;
 	
 	//****New protoType
 	public GameObject bodyPrefab;
@@ -83,7 +86,9 @@ public class DragonBase : MonoBehaviour
 	void Start () {
 		moveAssetDatabase = GameController.instance.moveAssetDatabase;
 		//ToDo needs to be loaded from a data loader
-
+		DashTrail = transform.Find ("DashTrail").gameObject;
+		FireTrail = transform.Find ("FireTrail").gameObject;
+		oldColor = DashTrail.transform.Find ("Trail").particleSystem.startColor;
         for (int i = 0; i < 6; i++)
         {
             AddMoveByID(i);
@@ -582,10 +587,16 @@ public class DragonBase : MonoBehaviour
 	{
 		while (true)
 		{
+			DashTrail.SetActive (true);
+			FireTrail.SetActive (false);
+			DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
+			DashTrail.transform.Find ("Trail").particleSystem.startColor = new Color(1,0,0);
+
 			if (inputMouseButton)
 			{
 				moveData.currentChargeTime += 0.01f;
-
+				if (moveData.currentChargeTime >= (moveData.ChargeTime * 1)/3)
+					DashTrail.transform.Find ("Trail").particleSystem.startColor = new Color(0,1,0);
 				// slow down while charging
 				if (this.GetComponent<MovementController>().moveSpeed > 0)
 					this.GetComponent<MovementController>().moveSpeed -= 0.1f;
@@ -622,6 +633,8 @@ public class DragonBase : MonoBehaviour
 				{
 					ResetSpeed();
 					moveData.ResetCharge();
+					DashTrail.SetActive (false);
+					FireTrail.SetActive (true);
 					break;
 				}
 			}
@@ -673,13 +686,38 @@ public class DragonBase : MonoBehaviour
 		dashState = state;
 		// move the player if they are stopped
 		GetComponent<MovementController>().isDashing = true;
-		
+		Color newColor;
+		// different colors for each dash power level
+		switch (state)
+		{
+		case 1:
+			DashTrail.transform.Find ("Trail").particleSystem.startSize = 5;
+			newColor = new Color(1,0,0);
+			DashTrail.transform.Find ("Trail").particleSystem.startColor = newColor;
+			break;
+		case 2:
+			DashTrail.transform.Find ("Trail").particleSystem.startSize = 6;
+			newColor = new Color(0,1,0);
+			DashTrail.transform.Find ("Trail").particleSystem.startColor = newColor;
+			break;
+		case 3:
+			DashTrail.transform.Find ("Trail").particleSystem.startSize = 7;
+			DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
+			break;
+		default:
+			DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
+			DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
+			break;
+		}
 		IncreaseSpeed(speed);
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();
-		
+
 		dashState = 0;
 		GetComponent<MovementController>().isDashing = false;
+		DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
+		DashTrail.SetActive (false);
+		FireTrail.SetActive (true);
 	}
 	
 	void IncreaseSpeed(int speed) 
@@ -721,8 +759,6 @@ public class DragonBase : MonoBehaviour
 		IncreaseSpeed(6); 
 
 		// set partivle effects
-		GameObject DashTrail = transform.Find ("DashTrail").gameObject;
-		GameObject FireTrail = transform.Find ("FireTrail").gameObject;
 		DashTrail.SetActive (true);
 		FireTrail.SetActive (false);
 		DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
