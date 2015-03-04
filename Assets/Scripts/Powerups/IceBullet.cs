@@ -14,7 +14,7 @@ public class IceBullet : MonoBehaviour
 	private string playerTag;
     public GameObject explosion;
     private bool isCollided;
-    public ProjectileType type = ProjectileType.Ice;
+	public ProjectileType type;// = ProjectileType.Ice;
 	void Start() 
 	{
         Destroy(this.gameObject, 5f);
@@ -38,21 +38,34 @@ public class IceBullet : MonoBehaviour
        Destroy(gameObject.collider);
        explosion.SetActive(true);
 
-        if(collision.gameObject.tag != playerTag)
-        {
+        //if(collision.gameObject.tag != playerTag)
+        //{
 
-            DragonBase dragon = collision.gameObject.GetComponent<Tail>().player.GetComponent<DragonBase>() ;
-            if (dragon != null)
-            {
-                switch(type)
-                {
-                    case ProjectileType.Ice : break;  //TODO Slow down the speed of dragon
-                    case ProjectileType.Fire :break;  // Break the dragon at the give tail point
+		DragonBase dragon = null;
+		int currentTail = 1;
 
-                }
-                Debug.Log("hit dragon " + dragon.tag);
-            }
-        }
+		if (collision.gameObject.tag == "Tail") {
+			dragon = collision.gameObject.GetComponent<Tail>().player.GetComponent<DragonBase>() ;
+			currentTail = collision.gameObject.GetComponent<Tail>().tailNo;
+		}
+		else if (collision.gameObject.tag == playerTag)
+			dragon = collision.gameObject.GetComponent<DragonBase>() ;
+
+	    if (dragon != null)
+	    {
+	        switch(type)
+	        {
+	        case ProjectileType.Ice :
+				Debug.Log ("FreezeMe");
+				StartCoroutine(dragon.Frozen());
+				break;
+	        case ProjectileType.Fire :
+				dragon.BreakTail(currentTail);	
+				break;  // Break the dragon at the give tail point
+	        }
+	        Debug.Log("hit dragon " + dragon.tag);
+	    }
+        //}
 
 		//f (collision.gameObject.tag == playerTag) 
     		//Physics.IgnoreCollision(collision.collider, collider);

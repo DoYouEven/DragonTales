@@ -556,6 +556,7 @@ public class DragonBase : MonoBehaviour
         GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
 		ice.GetComponent<IceBullet>().ownerID = playerID;
+		ice.GetComponent<IceBullet> ().type = ProjectileType.Ice;
         ice.GetComponent<IceBullet>().tag = gameObject.tag;
 		hasIce = false;
 	}
@@ -564,6 +565,7 @@ public class DragonBase : MonoBehaviour
         GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
         Fire.GetComponent<IceBullet>().ownerID = playerID;
+		Fire.GetComponent<IceBullet> ().type = ProjectileType.Fire;
         Fire.GetComponent<IceBullet>().tag = gameObject.tag;
         hasIce = false;
     }
@@ -734,6 +736,15 @@ public class DragonBase : MonoBehaviour
 			this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed + speed;
 		else
 			this.GetComponent<MovementController>().moveSpeed = minSpeed + speed;
+	}
+
+	public IEnumerator Frozen() 
+	{
+		canDash = false;
+		this.GetComponent<MovementController> ().moveSpeed = minSpeed - 3;
+		yield return new WaitForSeconds(4);
+		canDash = true;
+		ResetSpeed ();
 	}
 	
 	void ResetSpeed() 
