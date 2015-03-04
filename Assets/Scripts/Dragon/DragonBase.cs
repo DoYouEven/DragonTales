@@ -186,7 +186,7 @@ public class DragonBase : MonoBehaviour
 		
 		if ((GameObject.FindWithTag ("IcePowerUp") == null) || (GameObject.FindWithTag("BitPowerUp") == null))
 		{
-			Instantiate(moveAssetDatabase.GetByID(r).PowerUpPrefab, new Vector3(160, 1, 150), Quaternion.identity);
+			Instantiate(moveAssetDatabase.GetByID(r).PowerUpPrefab, new Vector3(180, 1, 150), Quaternion.identity);
 			Debug.Log("here");
 			Debug.Log (moveAssetDatabase.GetByID(r).Name);
 		
