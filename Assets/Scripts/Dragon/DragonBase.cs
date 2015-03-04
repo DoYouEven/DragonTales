@@ -56,6 +56,7 @@ public class DragonBase : MonoBehaviour
 	#endregion
     #region Moves
     public List<MoveData> moves = new List<MoveData>();
+	public bool shielded;
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
     public bool hasBitePowerup;
@@ -361,6 +362,7 @@ public class DragonBase : MonoBehaviour
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha5))
         {
             CastMove(5);
+			shielded = true;
         }
 		
 	}
@@ -404,7 +406,7 @@ public class DragonBase : MonoBehaviour
 			
 			// Collision with enemy tail while Dashing
 			if (ownerID != playerID && !isBreaking && ownerID != 0) {
-				if (dashState > 0) 
+				if (dashState > 0 && !GameObject.FindWithTag(playerTag).GetComponent<DragonBase>().shielded) 
 				{
 					Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 					isBreaking = true;
@@ -429,6 +431,11 @@ public class DragonBase : MonoBehaviour
 					{
 						otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
 					}
+				}
+				else
+				{
+					Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+					Deflect(relative);
 				}
 			} 
 		}
@@ -529,10 +536,11 @@ public class DragonBase : MonoBehaviour
         SheildMesh.SetActive(true);
         for (int i = 0; i < tails.Count; i++ )
         {
-            tails[i].BasicMesh.SetActive(false);
+           	tails[i].BasicMesh.SetActive(false);
             tails[i].SheildMesh.SetActive(true);
         }
             yield return new WaitForSeconds(3.0f);
+		shielded = false;
         BasicMesh.SetActive(true);
         SheildMesh.SetActive(false);
         for (int i = 0; i < tails.Count; i++)
@@ -548,6 +556,7 @@ public class DragonBase : MonoBehaviour
         GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
 		ice.GetComponent<IceBullet>().ownerID = playerID;
+		ice.GetComponent<IceBullet> ().type = ProjectileType.Ice;
         ice.GetComponent<IceBullet>().tag = gameObject.tag;
 		hasIce = false;
 	}
@@ -556,6 +565,7 @@ public class DragonBase : MonoBehaviour
         GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
         Fire.GetComponent<IceBullet>().ownerID = playerID;
+		Fire.GetComponent<IceBullet> ().type = ProjectileType.Fire;
         Fire.GetComponent<IceBullet>().tag = gameObject.tag;
         hasIce = false;
     }
@@ -726,6 +736,15 @@ public class DragonBase : MonoBehaviour
 			this.GetComponent<MovementController>().moveSpeed = Mathf.Pow(0.98f, tails.Count) * moveSpeed + speed;
 		else
 			this.GetComponent<MovementController>().moveSpeed = minSpeed + speed;
+	}
+
+	public IEnumerator Frozen() 
+	{
+		canDash = false;
+		this.GetComponent<MovementController> ().moveSpeed = minSpeed - 3;
+		yield return new WaitForSeconds(4);
+		canDash = true;
+		ResetSpeed ();
 	}
 	
 	void ResetSpeed() 
