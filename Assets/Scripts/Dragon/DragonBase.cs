@@ -56,6 +56,7 @@ public class DragonBase : MonoBehaviour
 	#endregion
     #region Moves
     public List<MoveData> moves = new List<MoveData>();
+	public bool shielded;
     private Dictionary<int, Action<MoveData, int>> currentMoveMethods = new Dictionary<int, Action<MoveData, int>>();
     public Powerup p;
     public bool hasBitePowerup;
@@ -361,6 +362,7 @@ public class DragonBase : MonoBehaviour
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(KeyCode.Alpha5))
         {
             CastMove(5);
+			shielded = true;
         }
 		
 	}
@@ -404,7 +406,7 @@ public class DragonBase : MonoBehaviour
 			
 			// Collision with enemy tail while Dashing
 			if (ownerID != playerID && !isBreaking && ownerID != 0) {
-				if (dashState > 0) 
+				if (dashState > 0 && !GameObject.FindWithTag(playerTag).GetComponent<DragonBase>().shielded) 
 				{
 					Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 					isBreaking = true;
@@ -429,6 +431,11 @@ public class DragonBase : MonoBehaviour
 					{
 						otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
 					}
+				}
+				else
+				{
+					Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+					Deflect(relative);
 				}
 			} 
 		}
@@ -529,10 +536,11 @@ public class DragonBase : MonoBehaviour
         SheildMesh.SetActive(true);
         for (int i = 0; i < tails.Count; i++ )
         {
-            tails[i].BasicMesh.SetActive(false);
+           	tails[i].BasicMesh.SetActive(false);
             tails[i].SheildMesh.SetActive(true);
         }
             yield return new WaitForSeconds(3.0f);
+		shielded = false;
         BasicMesh.SetActive(true);
         SheildMesh.SetActive(false);
         for (int i = 0; i < tails.Count; i++)
