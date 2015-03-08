@@ -104,7 +104,7 @@ public class DragonBase : MonoBehaviour
 		FireTrail = transform.Find ("FireTrail").gameObject;
 		oldColor = DashTrail.transform.Find ("Trail").particleSystem.startColor;
       
-        for (int i = 1; i < 6; i++)
+        for (int i = 0; i < 6; i++)
         {
             AddMoveByID(i);
         }
@@ -365,27 +365,28 @@ public class DragonBase : MonoBehaviour
             if (canDash)
                 DashAttack(moves[0], 0);
 		}
+
 		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill2))
 		{
-			CastMove(0);
+			CastMove(1);
 		}
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill3))
         {
-            CastMove(1);
+            CastMove(2);
         }
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill4))
         {
-            CastMove(2);
+            CastMove(3);
 			shielded = true;
         }
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill5))
         {
-            CastMove(3);
+            CastMove(4);
             shielded = true;
         }
         if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill6))
         {
-            CastMove(4);
+            CastMove(5);
             shielded = true;
         }
 		
@@ -476,7 +477,7 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "SprintPowerUp")
 		{
 			Destroy(hit.gameObject);
-			CastMove(2);
+			CastMove(3);
 		}
 		// ICE
 		else if (hit.gameObject.tag == "IcePowerUp")
