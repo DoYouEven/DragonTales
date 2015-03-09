@@ -824,6 +824,7 @@ public class DragonBase : MonoBehaviour
         playerUI.moveSlots[index].Unassign();
 		canDash = false;
 		GetComponent<MovementController>().isDashing = true;
+        GetComponent<AudioSource>().PlayOneShot(moveData.clip);
 		dashState = 3;
 
 		IncreaseSpeed(6); 
