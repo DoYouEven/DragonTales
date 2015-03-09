@@ -9,6 +9,7 @@
        public int ID;
        private float cooldown;
        private float chargeTime;
+       public AudioClip clip;
        public GameObject VFXPrefab;
        public float Cooldown { get { return cooldown; } set { cooldown = value; currentCooldown = value; } }
        public float currentCooldown;

@@ -22,8 +22,8 @@ public class DragonBase : MonoBehaviour
 	private float sprintSpeed;
 	private float frozenSpeed;
 	private bool isBreaking;
-	private GameObject DashTrail;
-	private GameObject FireTrail;
+	public  GameObject DashTrail;
+	public  GameObject FireTrail;
 	private Color oldColor;
 	
 	//****New protoType
@@ -76,6 +76,7 @@ public class DragonBase : MonoBehaviour
         Dash.name = Data.Name;
         Dash.Cooldown = Data.Cooldown;
         Dash.ChargeTime = Data.ChargeTime;
+        Dash.clip = Data.audioClipName;
         Dash.ID = Data.ID;
         Dash.VFXPrefab = Data.VFXPrefab;
         Dash.icon = Data.icon;
@@ -567,6 +568,7 @@ public class DragonBase : MonoBehaviour
     }
     IEnumerator SheildCo(MoveData moveData,int index)
     {
+        GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         playerUI.moveSlots[index].Unassign();
         BasicMesh.SetActive(false);
         SheildMesh.SetActive(true);
@@ -590,6 +592,8 @@ public class DragonBase : MonoBehaviour
 	void IceAttack(MoveData moveData, int index)
 	{
         GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);
+
+        GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
 		ice.GetComponent<IceBullet>().ownerID = playerID;
 		ice.GetComponent<IceBullet> ().type = ProjectileType.Ice;
@@ -600,6 +604,8 @@ public class DragonBase : MonoBehaviour
     void FireAttack(MoveData moveData, int index)
     {
         GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
+      
+        GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
         Fire.GetComponent<IceBullet>().ownerID = playerID;
 		Fire.GetComponent<IceBullet> ().type = ProjectileType.Fire;
@@ -681,12 +687,12 @@ public class DragonBase : MonoBehaviour
 				{
 					ResetSpeed();
 					moveData.ResetCharge();
-					DashTrail.SetActive (false);
-					FireTrail.SetActive (true);
+					
 					break;
 				}
 			}
-			
+            DashTrail.SetActive(false);
+            FireTrail.SetActive(true);
 			/* OLD DASH
             if (inputMouseButton)
             {
@@ -757,7 +763,7 @@ public class DragonBase : MonoBehaviour
 			DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
 			break;
 		}
-		IncreaseSpeed(speed);
+		IncreaseSpeed(speed *2);
 		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();
 
@@ -795,12 +801,15 @@ public class DragonBase : MonoBehaviour
 	
 	IEnumerator BiteAttackCo(MoveData moveData,int index)
 	{
+        GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         playerUI.moveSlots[index].Unassign();
 		hasBitePowerup = true;
 		canDash = false;
 		Color oldcolor = transform.GetChild(0).GetChild(0).renderer.material.color;
 		Color newcolor = oldcolor;
 		newcolor = new Color(1, 0.8f, 0);
+        GameObject GO =(GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
+        Destroy(GO, 2.0f);
 		transform.GetChild(0).GetChild(0).renderer.material.color = newcolor;
 		yield return new WaitForSeconds(moveData.Cooldown);
 		transform.GetChild(0).GetChild(0).renderer.material.color = oldcolor;

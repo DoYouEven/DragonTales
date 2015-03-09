@@ -20,6 +20,10 @@ public class GameController : MonoBehaviour
     public float minutes = 1;
     public float seconds = 0;
     float miliseconds = 0;
+
+
+    public EnergyBar P1Score;
+    public EnergyBar P2Score;
 	void Awake()
 	{
 		if(player1 == null || player2 == null)
@@ -32,7 +36,10 @@ public class GameController : MonoBehaviour
 
 	void Start()
 	{
-      
+        P1Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
+        P2Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
+        P1Score.SetValueCurrent(player1.GetComponent<DragonBase>().tails.Count);
+        P2Score.SetValueCurrent(player2.GetComponent<DragonBase>().tails.Count);
 		StartCoroutine (Winner ());
 	}
 
@@ -40,7 +47,11 @@ public class GameController : MonoBehaviour
 	{
         if (!gameover)
         {
-      
+            P1Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
+            P2Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
+
+            P1Score.SetValueCurrent(player1.GetComponent<DragonBase>().tails.Count);
+            P2Score.SetValueCurrent(player2.GetComponent<DragonBase>().tails.Count);
              if(miliseconds <= 0){
                  if(seconds <= 0){
                      minutes--;

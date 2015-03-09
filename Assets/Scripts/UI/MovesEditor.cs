@@ -1,9 +1,9 @@
 ﻿﻿using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System.Collections;
 
 public class MovesEditor
-{
+{/*
     private static string GetSelectionFolder()
     {
         if (Selection.activeObject != null)
@@ -29,5 +29,5 @@ public class MovesEditor
         AssetDatabase.CreateAsset(asset, AssetDatabase.GenerateUniqueAssetPath(currentPath + assetName));
         AssetDatabase.Refresh();
     }
-  
+  */
 }
