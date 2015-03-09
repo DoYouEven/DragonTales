@@ -31,8 +31,8 @@ public class DragonBase : MonoBehaviour
 	public GameObject finalTail;
 	private MoveAssetDatabase moveAssetDatabase;
 	#endregion
-  
-    
+
+    public List<string> Inputs;
     #region controls
     public KeyCode Skill1;
     public KeyCode Skill2;
@@ -81,6 +81,7 @@ public class DragonBase : MonoBehaviour
         Dash.VFXPrefab = Data.VFXPrefab;
         Dash.icon = Data.icon;
         moves.Add(Dash);
+        if(id!=0)
         onPowerup(Dash);
     }
     public void RemoveMove(int index)
@@ -355,39 +356,39 @@ public class DragonBase : MonoBehaviour
 	void Update () {
 		
 		//inputMouseButton = Input.GetMouseButton(0);
-		inputMouseButton = Input.GetKey (Skill1);
+        inputMouseButton = Input.GetButton(Inputs[0]);
 		
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			ExtendTail2();
 		}
-		if(Input.GetKeyDown(Skill1))
+        if (Input.GetButton(Inputs[0]))
 		{
             if (canDash)
                 DashAttack(moves[0], 0);
 		}
 
-		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill2))
+		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[1]))
 		{
-			CastMove(1);
+			CastMove(0);
 		}
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill3))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[2]))
+        {
+            CastMove(1);
+        }
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[3]))
         {
             CastMove(2);
-        }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill4))
-        {
-            CastMove(3);
 			shielded = true;
         }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill5))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[4]))
         {
-            CastMove(4);
+            CastMove(3);
             shielded = true;
         }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetKeyDown(Skill6))
+        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[5]))
         {
-            CastMove(5);
+            CastMove(4);
             shielded = true;
         }
 		
@@ -404,10 +405,10 @@ public class DragonBase : MonoBehaviour
 			
 			// Collision with OWN tail
 			if (ownerID == playerID && tails.Count > 1 && !isBreaking) {
-				isBreaking = true;
-                Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
-				StartCoroutine(BreakingTail());
-				BreakTail(currentTail);
+				//isBreaking = true;
+               // Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
+				//StartCoroutine(BreakingTail());
+				//BreakTail(currentTail);
 			} 
 			
 			// Bite powerup

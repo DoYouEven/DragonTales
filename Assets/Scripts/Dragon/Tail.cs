@@ -48,7 +48,7 @@ public class Tail : MonoBehaviour
 			Quaternion relative = Quaternion.Inverse (transform.parent.rotation) * transform.rotation;
 			// if the angles differ enough, move object forward
 			// gives better tail movement and control
-			if ((relative.y > 0.05f || relative.y < -0.05f) && player.GetComponent<MovementController> ().isMoving) 
+			if ((relative.y > 0.05f || relative.y < -0.05f) && player.GetComponent<MovementController> ().isMoving)
 			{
 				speed = player.GetComponent<MovementController> ().moveSpeed;
 				rigidbody.velocity = transform.forward * speed * 0.9f;

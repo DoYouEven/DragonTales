@@ -130,22 +130,7 @@ public class CameraController : MonoBehaviour
             {
 
 
-                // Lock the cursor (if enabled) when user click-drags mouse
-                if (lockCursor || _canRotate)
-                {
-                    if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
-                    {
-                        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
-                        {
-                            if (!Screen.lockCursor)
-                            {
-                                //Screen.lockCursor = true;
-                            }
-                        }
-
-                        return;
-                    }
-                }
+               
             }
         
 
@@ -179,14 +164,7 @@ public class CameraController : MonoBehaviour
             if (isPlayerControl)
             {
                 // Zoom control
-                if (Input.GetAxis("Mouse ScrollWheel") < 0)
-                {
-                    wantedDistance += zoomSpeed;
-                }
-                else if (Input.GetAxis("Mouse ScrollWheel") > 0)
-                {
-                    wantedDistance -= zoomSpeed;
-                }
+              
             }
 
             // Prevent wanted distance from going below or above min and max distance

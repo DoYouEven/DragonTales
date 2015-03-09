@@ -13,8 +13,9 @@ public class MovementController : MonoBehaviour
     public float moveSpeed;
     public int initialTailCount;
     public KeyCode MoveForward;
+    public string MoveForwardAxis;
     private float dx = 0;
-
+    public float dy = 0;
     void Start()
     {
      
@@ -25,20 +26,25 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
+        
         // temp player 2 controls
         if (tag == "Player1")
-            dx = Input.GetAxis("Horizontal");// *10f + dx;
+            dx =  Mathf.Lerp(dx,Input.GetAxis("Horizontal"),0.5f);// *10f + dx;
         else if (tag == "Player2")
-            dx = Input.GetAxis("HorizontalPlayer2");// *10f + dx;
+            dx = Mathf.Lerp(dx, Input.GetAxis("HorizontalPlayer2"), 0.5f);// *10f + dx;
         //dx = Mathf.Clamp(dx, -50, 50);
-
+       
         // forward movement
         if (alwaysMove || isDashing) {
             rigidbody.velocity = transform.forward * moveSpeed;
             isMoving = true;
-        } else if (Input.GetKey (MoveForward)) {
-            rigidbody.velocity = transform.forward * moveSpeed;
-            isMoving = true;
+        }
+        else if (Input.GetButton(MoveForwardAxis))
+        {
+          
+                rigidbody.velocity = transform.forward * moveSpeed ;
+                isMoving = true;
+            
         } else 
             isMoving = false;
 		
