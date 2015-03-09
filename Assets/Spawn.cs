@@ -50,7 +50,7 @@ public class Spawn : MonoBehaviour
             if (currentSpawnCount < maxSpawnCount)
             {
 
-                int id = Random.Range(1, 5);
+                int id = Random.Range(1, 6);
                 GameObject Powerup = (GameObject)Instantiate(data.GetByID(id).PowerUpPrefab, RandomPostion(), Quaternion.identity);
                 currentSpawnCount++;
             }
