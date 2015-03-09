@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
 
 	IEnumerator Winner() 
 	{
-		yield return new WaitForSeconds (MaxGameTime);
+        yield return new WaitForSeconds(minutes*60);
 		int p1Tails = player1.GetComponent<DragonBase> ().tails.Count;
 		int p2Tails = player2.GetComponent<DragonBase> ().tails.Count;
         gameover = true;
