@@ -55,7 +55,11 @@ public class DragonBase : MonoBehaviour
 	private int dashState = 0;   // 0=no dash, 1=weak, 2=medium, 3=strong
 	private bool hasIce;
 	#endregion
-	
+
+
+	public AudioClip smash;
+	public AudioClip bite;
+
 	#region events
 	public  delegate void EventPowerup(MoveData moveData);
     public delegate void EventPowerupUse(int index);
@@ -105,7 +109,9 @@ public class DragonBase : MonoBehaviour
 		DashTrail = transform.Find ("DashTrail").gameObject;
 		FireTrail = transform.Find ("FireTrail").gameObject;
 		oldColor = DashTrail.transform.Find ("Trail").particleSystem.startColor;
-      
+		smash = Resources.Load ("Sound/smash") as AudioClip;
+		bite = Resources.Load ("Sound/bite") as AudioClip;
+
         for (int i = 0; i < 6; i++)
         {
             AddMoveByID(i);
@@ -408,6 +414,7 @@ public class DragonBase : MonoBehaviour
 			
 			// Collision with OWN tail
 			if (ownerID == playerID && tails.Count > 1 && !isBreaking) {
+				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
 				//isBreaking = true;
                // Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 				//StartCoroutine(BreakingTail());
@@ -425,12 +432,14 @@ public class DragonBase : MonoBehaviour
 			
 			// Eat a broken tail piece
 			if (hit.gameObject.GetComponent<Tail>().canEat && !isBreaking) {
+				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
 				Destroy (hit.gameObject);
 				ExtendTail2();
 			} 
 			// collision with enemy tail while not dashing
 			if (ownerID != playerID && !hit.gameObject.GetComponent<Tail>().canEat && dashState == 0) 
 			{
+				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
 				Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
 				Deflect(relative);
 			}
@@ -494,7 +503,6 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "IcePowerUp")
 		{
 
-	
 			Destroy(hit.gameObject);
 			hasIce = true;
 		}
@@ -504,12 +512,14 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "Player1" || hit.gameObject.tag == "Player2")
 		{ 
 			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+			AudioSource.PlayClipAtPoint(smash, gameObject.transform.position);
 			Deflect(relative);
 		}
 		
 		// collision with obstacle
 		else if (hit.gameObject.tag == "Obstacle") {
 			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+			AudioSource.PlayClipAtPoint(smash ,gameObject.transform.position);
 			Deflect(relative);
 			BreakTail(1);
 		}
