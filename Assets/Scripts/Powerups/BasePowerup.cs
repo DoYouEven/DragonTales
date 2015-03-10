@@ -25,11 +25,11 @@ public class BasePowerup : MonoBehaviour {
 		if(hit.collider.tag == "Player1" || hit.collider.tag == "Player2")
         {
             Destroy(this.collider);
-            GameObject go = hit.gameObject;
+			GameObject go = hit.gameObject;
             Spawn.currentSpawnCount--;
             go.GetComponent<DragonBase>().AddMoveByID(moveID);
 			Debug.Log("basepowerup:i got it");
-			audio.PlayOneShot(collect);
+			AudioSource.PlayClipAtPoint(collect,gameObject.transform.position);
             Destroy(this.gameObject);
 		
         }

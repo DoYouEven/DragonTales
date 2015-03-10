@@ -477,7 +477,7 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "BitePowerUp")
 		{
 
-			Debug.Log ("i got bitepowerup");
+
 			Destroy(hit.gameObject);
 			CastMove(1);
 		}
@@ -485,7 +485,7 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "SprintPowerUp")
 		{
 		
-			Debug.Log ("i got sprintpowerup");
+	
 
 			Destroy(hit.gameObject);
 			CastMove(3);
@@ -494,7 +494,7 @@ public class DragonBase : MonoBehaviour
 		else if (hit.gameObject.tag == "IcePowerUp")
 		{
 
-			Debug.Log ("i got icepowerup");
+	
 			Destroy(hit.gameObject);
 			hasIce = true;
 		}
@@ -520,7 +520,7 @@ public class DragonBase : MonoBehaviour
 			
 			if (UnityEngine.Random.value > 0.5) {
 				
-				Debug.Log ("i got clone");
+		
 				Destroy (hit.gameObject);
 				return;
 				
