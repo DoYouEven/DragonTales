@@ -6,7 +6,8 @@ public class BasePowerup : MonoBehaviour {
 	// Use this for initialization
 
     public MoveData move;
-    public int moveID;
+    public int moveID; 
+	public AudioClip collect;
 	void Start () {
 
         //TODO
@@ -14,7 +15,8 @@ public class BasePowerup : MonoBehaviour {
         //moves.Add(Dash);
         //currentMoveMethods[Dash.ID] = DashAttack;
        
-        Destroy(gameObject, 10);
+		collect = Resources.Load ("Sound/collect") as AudioClip;
+		Destroy(gameObject, 10);
         
 	}
 
@@ -26,9 +28,10 @@ public class BasePowerup : MonoBehaviour {
             GameObject go = hit.gameObject;
             Spawn.currentSpawnCount--;
             go.GetComponent<DragonBase>().AddMoveByID(moveID);
-
+			Debug.Log("basepowerup:i got it");
+			audio.PlayOneShot(collect);
             Destroy(this.gameObject);
-             
+		
         }
     }	
     void OnDestroy()

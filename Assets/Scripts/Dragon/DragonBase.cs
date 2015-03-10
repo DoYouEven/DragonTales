@@ -50,7 +50,7 @@ public class DragonBase : MonoBehaviour
     public GameObject collisionVFX;
     #endregion
     bool inputMouseButton, inputDashButton;
-	
+		
 	#region DragonStates
 	private int dashState = 0;   // 0=no dash, 1=weak, 2=medium, 3=strong
 	private bool hasIce;
@@ -117,6 +117,7 @@ public class DragonBase : MonoBehaviour
             Dash.Cooldown = 4.0f; 
             Dash.ChargeTime = 0.5f;
             Dash.ID = 0;
+            Dash.clip = dash;
             Dash.icon = moveAssetDatabase.GetByID(Dash.ID).icon;
             moves.Add(Dash);
             onPowerup(Dash);
@@ -127,6 +128,7 @@ public class DragonBase : MonoBehaviour
             Bite.name = "Bite";
             Bite.Cooldown = 4.0f;
             Bite.ID = 1;
+            Bite.clip = bite;
             moves.Add(Bite);
             //***********************
 		
@@ -135,6 +137,7 @@ public class DragonBase : MonoBehaviour
             Sprint.name = "Sprint";
             Sprint.Cooldown = 4.0f;
             Sprint.ID = 2;
+            
             moves.Add(Sprint);
             //***********************
 		
@@ -184,15 +187,15 @@ public class DragonBase : MonoBehaviour
 			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
 		}
 
-		var r = UnityEngine.Random.Range (0, 4);
-		
-		if ((GameObject.FindWithTag ("IcePowerUp") == null) || (GameObject.FindWithTag("BitPowerUp") == null))
-		{
-			Instantiate(moveAssetDatabase.GetByID(r).PowerUpPrefab, new Vector3(180, 1, 150), Quaternion.identity);
-			Debug.Log("here");
-			Debug.Log (moveAssetDatabase.GetByID(r).Name);
-		
-		}
+//		var r = UnityEngine.Random.Range (0, 4);
+//		
+//		if ((GameObject.FindWithTag ("IcePowerUp") == null) || (GameObject.FindWithTag("BitPowerUp") == null))
+//		{
+//			Instantiate(moveAssetDatabase.GetByID(r).PowerUpPrefab, new Vector3(180, 1, 150), Quaternion.identity);
+//			Debug.Log("here");
+//			Debug.Log (moveAssetDatabase.GetByID(r).Name);
+//		
+//		}
 
 
 		//Mapping the moveToAMethod
@@ -415,6 +418,7 @@ public class DragonBase : MonoBehaviour
 			if (hasBitePowerup && ownerID != 0) {
 				GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
 				otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
+				gameObject.GetComponent<AudioSource>().Play();
 				Destroy (hit.gameObject);
 				ExtendTail2();
 			} 
@@ -472,18 +476,25 @@ public class DragonBase : MonoBehaviour
 		// BITE
 		else if (hit.gameObject.tag == "BitePowerUp")
 		{
+
+			Debug.Log ("i got bitepowerup");
 			Destroy(hit.gameObject);
 			CastMove(1);
 		}
 		// SPRINT
 		else if (hit.gameObject.tag == "SprintPowerUp")
 		{
+		
+			Debug.Log ("i got sprintpowerup");
+
 			Destroy(hit.gameObject);
 			CastMove(3);
 		}
 		// ICE
 		else if (hit.gameObject.tag == "IcePowerUp")
 		{
+
+			Debug.Log ("i got icepowerup");
 			Destroy(hit.gameObject);
 			hasIce = true;
 		}
@@ -509,6 +520,7 @@ public class DragonBase : MonoBehaviour
 			
 			if (UnityEngine.Random.value > 0.5) {
 				
+				Debug.Log ("i got clone");
 				Destroy (hit.gameObject);
 				return;
 				
