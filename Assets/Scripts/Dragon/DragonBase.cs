@@ -425,7 +425,7 @@ public class DragonBase : MonoBehaviour
 			if (hasBitePowerup && ownerID != 0) {
 				GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
 				otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
-				gameObject.GetComponent<AudioSource>().Play();
+				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
 				Destroy (hit.gameObject);
 				ExtendTail2();
 			} 
