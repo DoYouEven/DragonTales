@@ -56,6 +56,17 @@ public class Tail : MonoBehaviour
 		}
 	}
 
+	void OnCollisionEnter(Collision hit)
+	{
+		if (hit.gameObject.tag == "Tail")
+		{
+			int TownerID = hit.gameObject.GetComponent<Tail>().OwnerID;
+			// ignore collisions with own tail pieces
+			if (TownerID == OwnerID)
+				Physics.IgnoreCollision(hit.gameObject.GetComponent<Collider>(), GetComponent<Collider>());
+		}
+	}
+
 	public void Break()
 	{
 		// can eat broken pieces for brief perioid

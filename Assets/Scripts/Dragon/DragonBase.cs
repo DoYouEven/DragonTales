@@ -415,6 +415,7 @@ public class DragonBase : MonoBehaviour
 			// Collision with OWN tail
 			if (ownerID == playerID && tails.Count > 1 && !isBreaking) {
 				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
+				Physics.IgnoreCollision(hit.gameObject.GetComponent<Collider>(), GetComponent<Collider>());
 				//isBreaking = true;
                // Instantiate(collisionVFX, hit.collider.transform.position, Quaternion.identity);
 				//StartCoroutine(BreakingTail());
@@ -521,7 +522,7 @@ public class DragonBase : MonoBehaviour
 			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
 			AudioSource.PlayClipAtPoint(smash ,gameObject.transform.position);
 			Deflect(relative);
-			BreakTail(1);
+			//BreakTail(1);
 		}
 		
 		////
@@ -544,6 +545,7 @@ public class DragonBase : MonoBehaviour
 			rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
 		else
 			rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
+
 	}
 	
 	void CastMove(int selectedIndex)
