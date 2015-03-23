@@ -41,7 +41,6 @@ public class MovementController : MonoBehaviour
         }
         else if (Input.GetButton(MoveForwardAxis))
         {
-          
                 rigidbody.velocity = transform.forward * moveSpeed ;
                 isMoving = true;
             
@@ -67,7 +66,7 @@ public class MovementController : MonoBehaviour
                 Quaternion deltaRotation = Quaternion.Euler((transform.up * turnSpeed * 50 * dx) * Time.deltaTime);
                 rigidbody.MoveRotation(rigidbody.rotation * deltaRotation);
             }
-        }
+			}
         /*
         if (Input.acceleration.sqrMagnitude != 0)
         {

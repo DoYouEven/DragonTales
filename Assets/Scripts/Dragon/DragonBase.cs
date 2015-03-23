@@ -366,12 +366,12 @@ public class DragonBase : MonoBehaviour
 		
 		//inputMouseButton = Input.GetMouseButton(0);
         inputMouseButton = Input.GetButton(Inputs[0]);
-		
+
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			ExtendTail2();
 		}
-        if (Input.GetButton(Inputs[0]))
+        if (Input.GetButtonDown(Inputs[0]))
 		{
             if (canDash)
                 DashAttack(moves[0], 0);
@@ -515,6 +515,7 @@ public class DragonBase : MonoBehaviour
 			Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
 			AudioSource.PlayClipAtPoint(smash, gameObject.transform.position);
 			Deflect(relative);
+
 		}
 		
 		// collision with obstacle
@@ -674,18 +675,27 @@ public class DragonBase : MonoBehaviour
 
 			if (inputMouseButton)
 			{
-				moveData.currentChargeTime += 0.01f;
-				if (moveData.currentChargeTime >= (moveData.ChargeTime * 1)/3)
-					DashTrail.transform.Find ("Trail").particleSystem.startColor = new Color(0,1,0);
+				moveData.currentChargeTime += 0.025f;
+
 				// slow down while charging
 				if (this.GetComponent<MovementController>().moveSpeed > 0)
 					this.GetComponent<MovementController>().moveSpeed -= 0.1f;
-				
-				// Strong Dash
-				if (moveData.currentChargeTime > moveData.ChargeTime)
+
+				// change golor to green when dash is charged enough
+				if (moveData.currentChargeTime >= moveData.ChargeTime)
 				{
-					StartCoroutine(PerformDash(3, 13));
+					Color newColor = new Color(0,1,0);
+					DashTrail.transform.Find ("Trail").particleSystem.startColor = newColor;
+					DashTrail.transform.Find ("Trail").particleSystem.startSize = 5.5f;
+				}
+
+				// Hold Dash for too long
+				if (moveData.currentChargeTime > 6)
+				{
+					ResetSpeed();
 					moveData.ResetCharge();
+					DashTrail.SetActive(false);
+					FireTrail.SetActive(true);
 					break;
 				}
 				else
@@ -696,7 +706,7 @@ public class DragonBase : MonoBehaviour
 			if (!inputMouseButton)
 			{
 				// Weak dash
-				if (moveData.currentChargeTime >= moveData.ChargeTime/3 && moveData.currentChargeTime < (moveData.ChargeTime * 2)/3)
+				/*if (moveData.currentChargeTime >= moveData.ChargeTime/3 && moveData.currentChargeTime < (moveData.ChargeTime * 2)/3)
 				{
 					StartCoroutine(PerformDash(1, 7));
 					moveData.ResetCharge();
@@ -708,17 +718,25 @@ public class DragonBase : MonoBehaviour
 					StartCoroutine(PerformDash(2, 10));
 					moveData.ResetCharge();
 					break;
-				}
-				else  
+				}*/
+
+				// Perform Dash on Release
+				if (moveData.currentChargeTime > moveData.ChargeTime)
 				{
+					StartCoroutine(PerformDash(3, 15));
+					moveData.ResetCharge();
+
+					break;
+				}
+				else{
 					ResetSpeed();
 					moveData.ResetCharge();
-					
+					DashTrail.SetActive(false);
+					FireTrail.SetActive(true);
 					break;
 				}
 			}
-            DashTrail.SetActive(false);
-            FireTrail.SetActive(true);
+            
 			/* OLD DASH
             if (inputMouseButton)
             {
@@ -789,7 +807,7 @@ public class DragonBase : MonoBehaviour
 			DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
 			break;
 		}
-		IncreaseSpeed(speed *2);
+		IncreaseSpeed(speed);
 		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();
 
