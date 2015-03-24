@@ -13,7 +13,7 @@ public class Replay : MonoBehaviour {
 	
         if(Input.GetButton("P1Skill1"))
         {
-            Application.LoadLevel("MVPALPHA2"); 
+			Application.LoadLevel("BetaSceneV_1"); 
         }
 	}
 }
