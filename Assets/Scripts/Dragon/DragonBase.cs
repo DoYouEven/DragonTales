@@ -45,6 +45,7 @@ public class DragonBase : MonoBehaviour
     #region mesh
     public GameObject BasicMesh;
     public GameObject SheildMesh;
+	public GameObject FrostMesh;
     #endregion
     #region VFX
     public GameObject collisionVFX;
@@ -194,10 +195,11 @@ public class DragonBase : MonoBehaviour
 
 		// set color
 		if (playerID == 2) {
-			Color colorM = transform.GetChild(0).GetChild(0).renderer.material.color;
+			Color colorM = transform.GetChild(4).GetChild(0).GetChild(0).renderer.material.color;
+			//Debug.Log (transform.GetChild(3).GetChild(0).GetChild(0).name);
 			colorM.r = colorM.r * 0.5f;
 			colorM.b = colorM.b * 1.5f;
-			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
+			transform.GetChild(4).GetChild(0).GetChild(0).renderer.material.color = colorM;
 		}
 
 //		var r = UnityEngine.Random.Range (0, 4);
@@ -844,7 +846,25 @@ public class DragonBase : MonoBehaviour
 	{
 		canDash = false;
 		this.GetComponent<MovementController> ().moveSpeed = minSpeed - 3;
+
+		BasicMesh.SetActive(false);
+		FrostMesh.SetActive(true);
+		for (int i = 0; i < tails.Count; i++ )
+		{
+			tails[i].BasicMesh.SetActive(false);
+			tails[i].FrostMesh.SetActive(true);
+		}
+
 		yield return new WaitForSeconds(4);
+
+		BasicMesh.SetActive(true);
+		FrostMesh.SetActive(false);
+		for (int i = 0; i < tails.Count; i++)
+		{
+			tails[i].BasicMesh.SetActive(true);
+			tails[i].FrostMesh.SetActive(false);
+		}
+
 		canDash = true;
 		ResetSpeed ();
 	}
