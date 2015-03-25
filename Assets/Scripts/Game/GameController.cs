@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public GameObject GameOverPanel;
     public List<GameObject> WinnerPanel;
     private bool gameover = false;
+	public bool suddenDeath;
     public float minutes = 1;
     public float seconds = 0;
     float miliseconds = 0;
@@ -40,7 +41,8 @@ public class GameController : MonoBehaviour
         P2Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
         P1Score.SetValueCurrent(player1.GetComponent<DragonBase>().tails.Count);
         P2Score.SetValueCurrent(player2.GetComponent<DragonBase>().tails.Count);
-		StartCoroutine (Winner ());
+		if (!suddenDeath)
+			StartCoroutine (Winner ());
 	}
 
 	void Update()
@@ -72,6 +74,22 @@ public class GameController : MonoBehaviour
         }
 	}
 
+	public void SuddenDeathWinner(int player)
+	{
+		gameover = true;
+		GameOverPanel.SetActive(true);
+		if (player == 1) 
+		{
+			Debug.Log ("Player 1 Wins!");
+			WinnerPanel[0].SetActive(true);
+		} 
+		else if (player == 2) 
+		{
+			Debug.Log ("Player 2 Wins!");
+			WinnerPanel[1].SetActive(true);
+		}
+	}
+
 	IEnumerator Winner() 
 	{
         yield return new WaitForSeconds(minutes*60);
@@ -92,7 +110,8 @@ public class GameController : MonoBehaviour
 		else
 		{
 			Debug.Log ("Tie!");
-			// TODO: disaply tie game
+			WinnerPanel[2].SetActive(true);
+			GameOverPanel.transform.FindChild("Logo").gameObject.SetActive(false);
 		}
 	}
 

@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Replay : MonoBehaviour {
-
+	public bool suddenDeath;
 	// Use this for initialization
 	void Start () {
 	
@@ -13,7 +13,10 @@ public class Replay : MonoBehaviour {
 	
         if(Input.GetButton("P1Skill1"))
         {
-			Application.LoadLevel("BetaSceneV_1"); 
+			if (!suddenDeath)
+				Application.LoadLevel("BetaSceneV_2"); 
+			else
+				Application.LoadLevel("SuddenDeathV_1"); 
         }
 	}
 }

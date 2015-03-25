@@ -24,6 +24,7 @@ public class DragonBase : MonoBehaviour
 	private bool isBreaking;
 	public  GameObject DashTrail;
 	public  GameObject FireTrail;
+	public bool suddenDeath;
 	private Color oldColor;
 	
 	//****New protoType
@@ -108,6 +109,8 @@ public class DragonBase : MonoBehaviour
     #endregion
     // Use this for initialization
 	void Start () {
+		if (suddenDeath)
+			SuddenDeathSprint ();
 		moveAssetDatabase = GameController.instance.moveAssetDatabase;
 		//ToDo needs to be loaded from a data loader
 		DashTrail = transform.Find ("DashTrail").gameObject;
@@ -376,54 +379,86 @@ public class DragonBase : MonoBehaviour
 #endregion
     // Update is called once per frame
 	void Update () {
-		
-		//inputMouseButton = Input.GetMouseButton(0);
-        inputMouseButton = Input.GetButton(Inputs[0]);
+		if (!suddenDeath) {
+						//inputMouseButton = Input.GetMouseButton(0);
+						inputMouseButton = Input.GetButton (Inputs [0]);
 
-		if(Input.GetKeyDown(KeyCode.Space))
-		{
-			ExtendTail2();
-		}
-        if (Input.GetButtonDown(Inputs[0]))
-		{
-            if (canDash)
-                DashAttack(moves[0], 0);
-		}
+						if (Input.GetKeyDown (KeyCode.Space)) {
+								ExtendTail2 ();
+						}
+						if (Input.GetButtonDown (Inputs [0])) {
+								if (canDash)
+										DashAttack (moves [0], 0);
+						}
 
-		if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[1]))
-		{
-			CastMove(0);
-		}
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[2]))
-        {
-            CastMove(1);
-        }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[3]))
-        {
-            CastMove(2);
-			shielded = true;
-        }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[4]))
-        {
-            CastMove(3);
-            shielded = true;
-        }
-        if ((Input.GetButtonDown("UsePower") && hasIce) || Input.GetButton(Inputs[5]))
-        {
-            CastMove(4);
-            shielded = true;
-        }
+						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [1])) {
+								CastMove (0);
+						}
+						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [2])) {
+								CastMove (1);
+						}
+						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [3])) {
+								CastMove (2);
+								//shielded = true;
+						}
+						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [4])) {
+								CastMove (3);
+								//shielded = true;
+						}
+						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [5])) {
+								CastMove (4);
+								//shielded = true;
+						}
+				}
+		// increase speed during sudden death
+		else if (rigidbody.velocity != Vector3.zero)
+			this.GetComponent<MovementController> ().moveSpeed += 0.01f;
 		
 	}
 	
 	void OnCollisionEnter(Collision hit)
 	{
+		//**********SUDDEN DEATH
+		if (suddenDeath) {
+			if (hit.gameObject.tag == "Obstacle") {
+				GameObject otherPlayer;
+				if (playerID == 1)
+				{
+					otherPlayer = GameObject.FindGameObjectWithTag ("Player2");
+					GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(2);
+				}
+				else
+				{
+					otherPlayer = GameObject.FindGameObjectWithTag ("Player1");
+					GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(1);
+				}
+				Destroy (this.gameObject);
+				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
+				otherPlayer.rigidbody.velocity = Vector3.zero;
+				otherPlayer.GetComponent<MovementController>().moveSpeed = 0;
+			}
+		}
+
 		//**********Tail collisions
 		if (hit.gameObject.tag == "Tail")
 		{
 			int currentTail = hit.gameObject.GetComponent<Tail>().tailNo;
 			string playerTag = "Player" + hit.gameObject.GetComponent<Tail>().OwnerID.ToString ();
 			int ownerID = hit.gameObject.GetComponent<Tail>().OwnerID;
+
+			// sudden death
+			if (suddenDeath && ownerID != playerID) 
+			{
+				if (playerID == 1)
+					GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(1);
+				else
+					GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(2);
+				GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
+				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
+				Destroy(otherPlayer);
+				rigidbody.velocity = Vector3.zero;
+				GetComponent<MovementController>().moveSpeed = 0;
+			}
 			
 			// Collision with OWN tail
 			if (ownerID == playerID && tails.Count > 1 && !isBreaking) {
@@ -455,7 +490,13 @@ public class DragonBase : MonoBehaviour
 			{
 				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
 				Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
-				Deflect(relative);
+				//Deflect(relative);
+				if (!hasBitePowerup){
+					if (relative.y > 0)
+						rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+					else
+						rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
+				}
 			}
 			
 			// Collision with enemy tail while Dashing
@@ -488,8 +529,8 @@ public class DragonBase : MonoBehaviour
 				}
 				else
 				{
-					Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
-					Deflect(relative);
+					//Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+					//Deflect(relative);
 				}
 			} 
 		}
@@ -551,14 +592,17 @@ public class DragonBase : MonoBehaviour
 				
 			}
 		}
+
 	}
 	
 	void Deflect (Quaternion relative)
 	{
-		if (relative.y > 0)
-			rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
-		else
-			rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
+		// simple fix (for now)
+		rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 180)));
+		//if (relative.y > 0)
+		//	rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+		//else
+		//	rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
 
 	}
 	
@@ -608,6 +652,7 @@ public class DragonBase : MonoBehaviour
     }
     IEnumerator SheildCo(MoveData moveData,int index)
     {
+		shielded = true;
         GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         playerUI.moveSlots[index].Unassign();
         BasicMesh.SetActive(false);
@@ -883,14 +928,14 @@ public class DragonBase : MonoBehaviour
         playerUI.moveSlots[index].Unassign();
 		hasBitePowerup = true;
 		canDash = false;
-		Color oldcolor = transform.GetChild(0).GetChild(0).renderer.material.color;
+		Color oldcolor = transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color;
 		Color newcolor = oldcolor;
 		newcolor = new Color(1, 0.8f, 0);
         GameObject GO =(GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
         Destroy(GO, 2.0f);
-		transform.GetChild(0).GetChild(0).renderer.material.color = newcolor;
+		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color = newcolor;
 		yield return new WaitForSeconds(moveData.Cooldown);
-		transform.GetChild(0).GetChild(0).renderer.material.color = oldcolor;
+		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color = oldcolor;
 		hasBitePowerup = false;
 		canDash = true;
 	}
@@ -905,7 +950,7 @@ public class DragonBase : MonoBehaviour
 
 		IncreaseSpeed(6); 
 
-		// set partivle effects
+		// set particle effects
 		DashTrail.SetActive (true);
 		FireTrail.SetActive (false);
 		DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
@@ -918,5 +963,19 @@ public class DragonBase : MonoBehaviour
 		GetComponent<MovementController>().isDashing = false;
 		canDash = true;
 		dashState = 0;
+	}
+
+	void SuddenDeathSprint() 
+	{
+		canDash = false;
+		GetComponent<MovementController>().isDashing = true;
+		dashState = 3;
+		
+		IncreaseSpeed(6); 
+		
+		// set particle effects
+		DashTrail.SetActive (true);
+		FireTrail.SetActive (false);
+		DashTrail.transform.Find ("Trail").particleSystem.startSize = 4;
 	}
 }
