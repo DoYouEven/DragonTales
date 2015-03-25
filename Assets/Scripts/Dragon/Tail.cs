@@ -12,6 +12,7 @@ public class Tail : MonoBehaviour
 	private float speed;
     public GameObject BasicMesh;
     public GameObject SheildMesh;
+	public GameObject FrostMesh;
     public MovementController movementController;
     public Animator anim;
     public bool isBackLeg;
@@ -27,9 +28,17 @@ public class Tail : MonoBehaviour
 			colorM.r = colorM.r * 0.5f;
 			colorM.b = colorM.b * 1.5f;
 			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
+
+			if (tailNo == 2) {
+				Color colorM2 = transform.GetChild(2).GetChild(0).GetChild(0).renderer.material.color;
+				colorM2.r = colorM2.r * 0.5f;
+				colorM2.b = colorM2.b * 1.5f;
+				transform.GetChild(2).GetChild(0).GetChild(0).renderer.material.color = colorM2;
+			}
 		}
 
 		Color color = transform.GetChild(0).GetChild(0).renderer.material.color;
+
 		if (tailNo > 4 && tailNo <= 10) 
 		{
 			color.r = color.r * 0.75f;
