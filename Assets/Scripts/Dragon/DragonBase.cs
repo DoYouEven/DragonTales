@@ -471,7 +471,7 @@ public class DragonBase : MonoBehaviour
 			} 
 			
 			// Bite powerup
-			if (hasBitePowerup && ownerID != 0) {
+			if (hasBitePowerup && ownerID != 0 && ownerID != playerID) {
 				GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
 				otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
 				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
@@ -527,10 +527,13 @@ public class DragonBase : MonoBehaviour
 						otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
 					}
 				}
-				else
+				else if (dashState > 0 && GameObject.FindWithTag(playerTag).GetComponent<DragonBase>().shielded) 
 				{
-					//Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
-					//Deflect(relative);
+					Quaternion relative = Quaternion.Inverse (hit.gameObject.transform.rotation) * transform.rotation;
+					if (relative.y > 0)
+						rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * 1000)));
+					else
+						rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler((transform.up * -1000)));
 				}
 			} 
 		}

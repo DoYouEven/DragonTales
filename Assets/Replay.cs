@@ -11,7 +11,7 @@ public class Replay : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-        if(Input.GetButton("P1Skill1"))
+        if(Input.GetButtonDown("P1Skill1"))
         {
 			if (!suddenDeath)
 				Application.LoadLevel("BetaSceneV_2"); 
