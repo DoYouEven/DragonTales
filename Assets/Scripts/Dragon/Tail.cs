@@ -12,6 +12,9 @@ public class Tail : MonoBehaviour
 	private float speed;
     public GameObject BasicMesh;
     public GameObject SheildMesh;
+    public MovementController movementController;
+    public Animator anim;
+    public bool isBackLeg;
 	void Start() 
 	{
 		canEat = false;
@@ -53,6 +56,16 @@ public class Tail : MonoBehaviour
 				speed = player.GetComponent<MovementController> ().moveSpeed;
 				rigidbody.velocity = transform.forward * speed * 0.9f;
 			}
+            if(anim!=null)
+            {
+
+           
+            if (player.GetComponent<MovementController>().isMoving)
+                anim.SetFloat("Speed", 1);
+            else
+                anim.SetFloat("Speed", 0);
+            }
+            
 		}
 	}
 

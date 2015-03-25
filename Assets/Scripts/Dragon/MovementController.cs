@@ -16,6 +16,8 @@ public class MovementController : MonoBehaviour
     public string MoveForwardAxis;
     private float dx = 0;
     public float dy = 0;
+
+    public Animator anim;
     void Start()
     {
      
@@ -38,15 +40,20 @@ public class MovementController : MonoBehaviour
         if (alwaysMove || isDashing) {
             rigidbody.velocity = transform.forward * moveSpeed;
             isMoving = true;
+            anim.SetFloat("Speed",1);
         }
         else if (Input.GetButton(MoveForwardAxis))
         {
-                rigidbody.velocity = transform.forward * moveSpeed ;
-                isMoving = true;
-            
-        } else 
+            rigidbody.velocity = transform.forward * moveSpeed;
+            anim.SetFloat("Speed", 1);
+            isMoving = true;
+
+        }
+        else
+        {
             isMoving = false;
-		
+            anim.SetFloat("Speed", 0);
+        }
 
         // turning
         var turnSpeed = 4;

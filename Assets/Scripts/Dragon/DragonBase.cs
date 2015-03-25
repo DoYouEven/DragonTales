@@ -289,10 +289,14 @@ public class DragonBase : MonoBehaviour
 		
 		//Add tail and keep track
 		GameObject newTail;
-		if (tails.Count == 2)
-			newTail = (GameObject)Instantiate(legsPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
-		else
-			newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
+        if (tails.Count == 2)
+        {
+            newTail = (GameObject)Instantiate(legsPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
+            newTail.GetComponent<Tail>().movementController = GetComponent<MovementController>();
+            newTail.GetComponent<Tail>().isBackLeg = true;
+        }
+        else
+            newTail = (GameObject)Instantiate(tailPrefab, tailEnd.transform.position - tailEnd.transform.forward, new Quaternion(0, 0, 0, 0));
 
 		Tail tail =  newTail.GetComponent<Tail>();
 		tail.GetComponent<Tail>().OwnerID = playerID;

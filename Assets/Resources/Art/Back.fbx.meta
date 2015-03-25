@@ -1,0 +1,206 @@
+fileFormatVersion: 2
+guid: f8b94c3f32b261b4a8ee58a8b62bfaf4
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Back2:Mesh
+    100004: Back_Master_CTRL
+    100006: Behind
+    100008: CTRLS
+    100010: Joints
+    100012: L_Feet
+    100014: L_Knee
+    100016: L_Leg
+    100018: Main_Body_CTRL
+    100020: Meshes
+    100022: R_Feet
+    100024: R_Knee
+    100026: R_Leg
+    100028: Rigg
+    400000: //RootNode
+    400002: Back2:Mesh
+    400004: Back_Master_CTRL
+    400006: Behind
+    400008: CTRLS
+    400010: Joints
+    400012: L_Feet
+    400014: L_Knee
+    400016: L_Leg
+    400018: Main_Body_CTRL
+    400020: Meshes
+    400022: R_Feet
+    400024: R_Knee
+    400026: R_Leg
+    400028: Rigg
+    4300000: Back2:Mesh
+    7400000: Run
+    7400002: Idle
+    9500000: //RootNode
+    13700000: Back2:Mesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Run
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Meshes
+        weight: 1
+      - path: Meshes/Back2:Mesh
+        weight: 1
+      - path: Rigg
+        weight: 1
+      - path: Rigg/CTRLS
+        weight: 1
+      - path: Rigg/CTRLS/Back_Master_CTRL
+        weight: 1
+      - path: Rigg/CTRLS/Back_Master_CTRL/Main_Body_CTRL
+        weight: 1
+      - path: Rigg/Joints
+        weight: 1
+      - path: Rigg/Joints/Behind
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg/L_Knee
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg/L_Knee/L_Feet
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg/R_Knee
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg/R_Knee/R_Feet
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: .100000001
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Meshes
+        weight: 1
+      - path: Meshes/Back2:Mesh
+        weight: 1
+      - path: Rigg
+        weight: 1
+      - path: Rigg/CTRLS
+        weight: 1
+      - path: Rigg/CTRLS/Back_Master_CTRL
+        weight: 1
+      - path: Rigg/CTRLS/Back_Master_CTRL/Main_Body_CTRL
+        weight: 1
+      - path: Rigg/Joints
+        weight: 1
+      - path: Rigg/Joints/Behind
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg/L_Knee
+        weight: 1
+      - path: Rigg/Joints/Behind/L_Leg/L_Knee/L_Feet
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg/R_Knee
+        weight: 1
+      - path: Rigg/Joints/Behind/R_Leg/R_Knee/R_Feet
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .150000006
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
