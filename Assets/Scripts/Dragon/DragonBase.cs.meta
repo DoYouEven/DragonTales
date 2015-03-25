@@ -2,7 +2,22 @@ fileFormatVersion: 2
 guid: 37efcdefc5d56084d9c84e101bf07aa4
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - tailPrefab: {instanceID: 0}
+  - legsPrefab: {instanceID: 0}
+  - Prefab: {instanceID: 0}
+  - IceBullet: {instanceID: 0}
+  - DashTrail: {instanceID: 0}
+  - FireTrail: {instanceID: 0}
+  - bodyPrefab: {instanceID: 0}
+  - finalTail: {instanceID: 0}
+  - BasicMesh: {instanceID: 0}
+  - SheildMesh: {instanceID: 0}
+  - collisionVFX: {instanceID: 0}
+  - smash: {fileID: 8300000, guid: 13f45f99efabc53458d730932b2af05b, type: 3}
+  - bite: {fileID: 8300000, guid: 6222bf264c26b45f886da92aefd83228, type: 3}
+  - playerUI: {instanceID: 0}
+  - p: {instanceID: 0}
   executionOrder: 500
   icon: {instanceID: 0}
   userData: 

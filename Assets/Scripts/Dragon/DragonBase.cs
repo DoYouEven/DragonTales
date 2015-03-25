@@ -59,6 +59,9 @@ public class DragonBase : MonoBehaviour
 
 	public AudioClip smash;
 	public AudioClip bite;
+	public AudioClip dash;
+	public AudioClip shield;
+	public AudioClip shootingbeam;
 
 	#region events
 	public  delegate void EventPowerup(MoveData moveData);
@@ -111,6 +114,10 @@ public class DragonBase : MonoBehaviour
 		oldColor = DashTrail.transform.Find ("Trail").particleSystem.startColor;
 		smash = Resources.Load ("Sound/smash") as AudioClip;
 		bite = Resources.Load ("Sound/bite") as AudioClip;
+		shootingbeam = Resources.Load ("Sound/shootingbeam") as AudioClip;
+		shield = Resources.Load ("Sound/shield") as AudioClip;
+		dash = Resources.Load ("Sound/dash") as AudioClip;
+
 
         for (int i = 0; i < 6; i++)
         {
@@ -602,6 +609,7 @@ public class DragonBase : MonoBehaviour
         GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         playerUI.moveSlots[index].Unassign();
         BasicMesh.SetActive(false);
+		AudioSource.PlayClipAtPoint(shield ,gameObject.transform.position);
         SheildMesh.SetActive(true);
         for (int i = 0; i < tails.Count; i++ )
         {
@@ -625,6 +633,7 @@ public class DragonBase : MonoBehaviour
         GameObject ice = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f +transform.up*1.5f, transform.rotation);
 
         GetComponent<AudioSource>().PlayOneShot(moveData.clip);
+		AudioSource.PlayClipAtPoint(shootingbeam,gameObject.transform.position);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
 		ice.GetComponent<IceBullet>().ownerID = playerID;
 		ice.GetComponent<IceBullet> ().type = ProjectileType.Ice;
@@ -635,7 +644,7 @@ public class DragonBase : MonoBehaviour
     void FireAttack(MoveData moveData, int index)
     {
         GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
-      
+		AudioSource.PlayClipAtPoint(shootingbeam,gameObject.transform.position);
         GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
         Fire.GetComponent<IceBullet>().ownerID = playerID;
@@ -812,6 +821,7 @@ public class DragonBase : MonoBehaviour
 			break;
 		}
 		IncreaseSpeed(speed);
+		AudioSource.PlayClipAtPoint(dash ,gameObject.transform.position);
 		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();
 
