@@ -101,7 +101,7 @@ public class Tail : MonoBehaviour
 
 	IEnumerator FadeDestroy() 
 	{
-		yield return new WaitForSeconds(4);
+		yield return new WaitForSeconds(10);
 		//TODO: Fadeout or particle explosion or whatever lol
 		Destroy (this.gameObject);
 	}

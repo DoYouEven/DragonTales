@@ -432,10 +432,10 @@ public class DragonBase : MonoBehaviour
 					otherPlayer = GameObject.FindGameObjectWithTag ("Player1");
 					GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(1);
 				}
-				Destroy (this.gameObject);
 				AudioSource.PlayClipAtPoint(smash,gameObject.transform.position);
 				otherPlayer.rigidbody.velocity = Vector3.zero;
 				otherPlayer.GetComponent<MovementController>().moveSpeed = 0;
+				Destroy (this.gameObject);
 			}
 		}
 
@@ -535,7 +535,13 @@ public class DragonBase : MonoBehaviour
 			} 
 		}
 		//****************************
-		
+		if (hit.gameObject.tag == "food")
+		{
+			AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
+			Destroy (hit.gameObject);
+			ExtendTail2();
+			Spawn.currentTailCount--;
+		}
 		//**********Power up collisions***********
 		// BITE
 		else if (hit.gameObject.tag == "BitePowerUp")
@@ -578,6 +584,15 @@ public class DragonBase : MonoBehaviour
 			AudioSource.PlayClipAtPoint(smash ,gameObject.transform.position);
 			Deflect(relative);
 			//BreakTail(1);
+		}
+
+		if ((hit.gameObject.tag == "Player1" || hit.gameObject.tag == "Player2") && hit.gameObject.tag != gameObject.tag )
+		{ 
+			if (hit.gameObject.GetComponent<DragonBase>().tails.Count == 0 && dashState == 3)
+			{
+				Destroy (hit.gameObject);
+				GameObject.Find ("Game").GetComponent<GameController>().SuddenDeathWinner(playerID);
+			}
 		}
 		
 		////
@@ -735,7 +750,7 @@ public class DragonBase : MonoBehaviour
 
 			if (inputMouseButton)
 			{
-				moveData.currentChargeTime += 0.025f;
+				moveData.currentChargeTime += 0.02f;
 
 				// slow down while charging
 				if (this.GetComponent<MovementController>().moveSpeed > 0)
@@ -842,6 +857,7 @@ public class DragonBase : MonoBehaviour
 	IEnumerator PerformDash(int state, int speed)
 	{
 		dashState = state;
+		canDash = false;
 		// move the player if they are stopped
 		GetComponent<MovementController>().isDashing = true;
 		Color newColor;
@@ -868,11 +884,14 @@ public class DragonBase : MonoBehaviour
 			break;
 		}
 		IncreaseSpeed(speed);
-		AudioSource.PlayClipAtPoint(dash ,gameObject.transform.position);
+		AudioSource.PlayClipAtPoint(dash ,gameObject.transform.position, 0.2f);
+		Vector3 vel = rigidbody.velocity;
 		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();
+		rigidbody.velocity = vel;
 
 		dashState = 0;
+		canDash = true;
 		GetComponent<MovementController>().isDashing = false;
 		DashTrail.transform.Find ("Trail").particleSystem.startColor = oldColor;
 		DashTrail.SetActive (false);

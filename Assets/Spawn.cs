@@ -8,18 +8,29 @@ public class Spawn : MonoBehaviour
     public float spawnTime = 3f;
     public Transform[] spawnPoints;
     public GameObject[] spawn_prefeb;
+	public GameObject tail_prefab;
     public MoveAssetDatabase data;
-    public int maxSpawnCount;
+    public int maxSpawnCount, maxTailCount;
     private float randomAngle;
     private Vector3 randomSpawnVector;
     public float radius = 70f;
     public static int currentSpawnCount = 0;
+	public static int currentTailCount = 0;
     // Use this for initialization
     void Start()
     {
-
+		currentTailCount = 0;
         InvokeRepeating("SpawnPowerUps", 1.0f, 2.0f);
+		Debug.Log (maxTailCount + "   " + currentTailCount);
         //StartCoroutine(SpawnPowerUps());
+		for (int i = 0; i < maxTailCount; i++)
+		{
+			if (currentTailCount < maxTailCount)
+			{
+				GameObject Tail = (GameObject)Instantiate(tail_prefab, RandomPostion2(), Quaternion.identity);
+				currentTailCount++;
+			}
+		}
     }
     public void DestroyPowerUp()
     {
@@ -28,7 +39,11 @@ public class Spawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if (currentTailCount < maxTailCount)
+		{
+			GameObject Tail = (GameObject)Instantiate(tail_prefab, RandomPostion2(), Quaternion.identity);
+			currentTailCount++;
+		}
         /*
         
         //  int spawnPoints_num = Random.Range (0,0); //1spawnpoints
@@ -54,10 +69,9 @@ public class Spawn : MonoBehaviour
                 GameObject Powerup = (GameObject)Instantiate(data.GetByID(id).PowerUpPrefab, RandomPostion(), Quaternion.identity);
                 currentSpawnCount++;
             }
-   
-
-            
         }
+
+
     }
     IEnumerator Wait(float duration)
     {
@@ -74,4 +88,13 @@ public class Spawn : MonoBehaviour
 
         return randomSpawnVector;
     }
+	Vector3 RandomPostion2()
+	{
+
+		randomSpawnVector.x = Random.Range (-radius/2, radius/2) + transform.position.x;
+		randomSpawnVector.z = Random.Range (-radius/2, radius/2) + transform.position.z;
+		randomSpawnVector.y = 2.5f;
+		
+		return randomSpawnVector;
+	}
 }

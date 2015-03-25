@@ -114,7 +114,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-
+		if (player1 != null && player2 != null) {
         Debug.DrawLine(player1.transform.position, player2.transform.position);
         target.position = (player1.transform.position + player2.transform.position) / 2;
         wantedDistance = (player1.transform.position - player2.transform.position).magnitude * ZFactor ;
@@ -139,7 +139,7 @@ public class CameraController : MonoBehaviour
         //}
 
 
-
+		}
     }
 
 

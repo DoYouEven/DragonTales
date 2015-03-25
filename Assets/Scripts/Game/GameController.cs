@@ -76,7 +76,14 @@ public class GameController : MonoBehaviour
 
 	public void SuddenDeathWinner(int player)
 	{
+ 		StartCoroutine (SuddenDeathWinnerStart (player));
+	}
+
+	public IEnumerator SuddenDeathWinnerStart(int player)
+	{
 		gameover = true;
+		yield return new WaitForSeconds(1.5f);
+		StopCoroutine (Winner ());
 		GameOverPanel.SetActive(true);
 		if (player == 1) 
 		{
@@ -95,7 +102,10 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(minutes*60);
 		int p1Tails = player1.GetComponent<DragonBase> ().tails.Count;
 		int p2Tails = player2.GetComponent<DragonBase> ().tails.Count;
+		player1.GetComponent<MovementController> ().moveSpeed = 0;
+		player2.GetComponent<MovementController> ().moveSpeed = 0;
         gameover = true;
+		yield return new WaitForSeconds (0.5f);
         GameOverPanel.SetActive(true);
 		if (p1Tails > p2Tails) {
 			Debug.Log ("Player 1 Wins!");
