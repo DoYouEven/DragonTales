@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public AudioSource audioClip;
 	public static GameController instance;
     public UILabel clock;
+	public UISlider timebar;
     public GameObject GameOverPanel;
     public List<GameObject> WinnerPanel;
     private bool gameover = false;
@@ -72,6 +73,7 @@ public class GameController : MonoBehaviour
              clock.text = string.Format("{0}:{1}:{2}", minutes, seconds, (int)miliseconds);
           
         }
+		timebar.value = (seconds + (miliseconds/100))/MaxGameTime;
 	}
 
 	public void SuddenDeathWinner(int player)
