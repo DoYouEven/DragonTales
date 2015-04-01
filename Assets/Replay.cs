@@ -14,7 +14,7 @@ public class Replay : MonoBehaviour {
         if(Input.GetButtonDown("P1Skill1"))
         {
 			if (!suddenDeath)
-				Application.LoadLevel("BetaSceneV_2"); 
+				Application.LoadLevel("TestScene"); 
 			else
 				Application.LoadLevel("SuddenDeathV_1"); 
         }

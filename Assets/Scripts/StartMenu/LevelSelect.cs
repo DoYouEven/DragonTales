@@ -14,6 +14,6 @@ public class LevelSelect : MonoBehaviour {
 	}
 
 	public void LoadLevelOne() {
-		Application.LoadLevel ("BetaSceneV_2"); 
+		Application.LoadLevel ("TestScene"); 
 	}
 }
