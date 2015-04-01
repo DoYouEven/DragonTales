@@ -41,7 +41,7 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        dashBar.SetValueCurrentF(dragonBase.moves[0].currentChargeTime);
+     //   dashBar.SetValueCurrentF(dragonBase.moves[0].currentChargeTime);
 
     }
 }

@@ -89,6 +89,8 @@ public class DragonBase : MonoBehaviour
         Dash.ID = Data.ID;
         Dash.VFXPrefab = Data.VFXPrefab;
         Dash.icon = Data.icon;
+		if (moves.Count > 0)
+			playerUI.moveSlots[0].Unassign();
         moves.Add(Dash);
         if(id!=0)
         onPowerup(Dash);
@@ -123,10 +125,11 @@ public class DragonBase : MonoBehaviour
 		dash = Resources.Load ("Sound/dash") as AudioClip;
 
 
-        for (int i = 0; i < 6; i++)
+        /*for (int i = 0; i < 6; i++)
         {
-            AddMoveByID(i);
-        }
+           AddMoveByID(i);
+        }*/
+		AddMoveByID(0);
             /*
             //*************Dash
             MoveData Dash = new MoveData();
