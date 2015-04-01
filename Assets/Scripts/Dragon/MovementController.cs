@@ -28,7 +28,9 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        
+        // restart game
+		if (Input.GetKeyDown("r"))
+			Application.LoadLevel("StartScreen"); 
         // temp player 2 controls
         if (tag == "Player1")
             dx =  Mathf.Lerp(dx,Input.GetAxis("Horizontal"),0.5f);// *10f + dx;
