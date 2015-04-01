@@ -16,7 +16,7 @@ public class Replay : MonoBehaviour {
 			if (!suddenDeath)
 				Application.LoadLevel("TestScene"); 
 			else
-				Application.LoadLevel("SuddenDeathV_1"); 
+				Application.LoadLevel("SuddenDeath"); 
         }
 	}
 }

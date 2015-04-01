@@ -422,7 +422,7 @@ public class DragonBase : MonoBehaviour
 	void OnCollisionEnter(Collision hit)
 	{
 		//**********SUDDEN DEATH
-		if (suddenDeath) {
+		/*if (suddenDeath) {
 			if (hit.gameObject.tag == "Obstacle") {
 				GameObject otherPlayer;
 				if (playerID == 1)
@@ -440,7 +440,7 @@ public class DragonBase : MonoBehaviour
 				otherPlayer.GetComponent<MovementController>().moveSpeed = 0;
 				Destroy (this.gameObject);
 			}
-		}
+		}*/
 
 		//**********Tail collisions
 		if (hit.gameObject.tag == "Tail")
