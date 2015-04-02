@@ -118,7 +118,7 @@ public class CameraController : MonoBehaviour
        	 	Debug.DrawLine(player1.transform.position, player2.transform.position);
         	target.position = (player1.transform.position + player2.transform.position) / 2;
 			float dist = Mathf.Abs(player1.transform.position.z - player2.transform.position.z);
-			YFactor = 0.25f + (dist/160);
+			YFactor = 0.5f + (dist/160);
 			ZFactor = 0.75f + (dist/480);
 			this.camera.fieldOfView = 60 + (dist/20);
 			//Debug.Log(Mathf.Abs(player1.transform.position.z - player2.transform.position.z));
