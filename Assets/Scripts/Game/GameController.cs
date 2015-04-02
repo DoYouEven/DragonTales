@@ -48,7 +48,7 @@ public class GameController : MonoBehaviour
 
 	void Update()
 	{
-        if (!gameover)
+        if (!gameover && !suddenDeath)
         {
             P1Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
             P2Score.SetValueMax(player1.GetComponent<DragonBase>().tails.Count + player2.GetComponent<DragonBase>().tails.Count);
@@ -73,7 +73,8 @@ public class GameController : MonoBehaviour
              clock.text = string.Format("{0}:{1}:{2}", minutes, seconds, (int)miliseconds);
           
         }
-		timebar.value = (seconds + (miliseconds/100))/MaxGameTime;
+		if (!gameover && !suddenDeath)
+			timebar.value = (seconds + (miliseconds/100))/MaxGameTime;
 	}
 
 	public void SuddenDeathWinner(int player)

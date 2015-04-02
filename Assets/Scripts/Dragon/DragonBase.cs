@@ -26,11 +26,14 @@ public class DragonBase : MonoBehaviour
 	public  GameObject FireTrail;
 	public bool suddenDeath;
 	private Color oldColor;
+	public List<Texture> mat;
 	
 	//****New protoType
 	public GameObject bodyPrefab;
 	public GameObject finalTail;
 	private MoveAssetDatabase moveAssetDatabase;
+	private Texture thismat;
+	private int matnum;
 	#endregion
 
     public List<string> Inputs;
@@ -193,21 +196,24 @@ public class DragonBase : MonoBehaviour
 		normalSpeed = moveSpeed;
 		sprintSpeed = moveSpeed + 15;
 		frozenSpeed = moveSpeed - 8;
-		
+
+		// set color
+		matnum = UnityEngine.Random.Range (0, 3);
+		thismat = mat [matnum];
+		transform.GetChild (3).GetChild (0).GetChild (0).renderer.material.SetTexture("_MainTex", thismat);
+		if (playerID == 2) {
+			Color colorM = transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color;
+			//Debug.Log (transform.GetChild(3).GetChild(0).GetChild(0).name);
+			colorM.r = colorM.r * 0.5f;
+			colorM.b = colorM.b * 1.5f;
+			transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color = colorM;
+		}
+
 		for (int i = 0; i < initialTailCount; i++)
 		{
 			//ExtendTail();
 			//ExtendTailProtoType();
 			ExtendTail2();
-		}
-
-		// set color
-		if (playerID == 2) {
-			Color colorM = transform.GetChild(4).GetChild(0).GetChild(0).renderer.material.color;
-			//Debug.Log (transform.GetChild(3).GetChild(0).GetChild(0).name);
-			colorM.r = colorM.r * 0.5f;
-			colorM.b = colorM.b * 1.5f;
-			transform.GetChild(4).GetChild(0).GetChild(0).renderer.material.color = colorM;
 		}
 
 //		var r = UnityEngine.Random.Range (0, 4);
@@ -317,6 +323,7 @@ public class DragonBase : MonoBehaviour
 
 		Tail tail =  newTail.GetComponent<Tail>();
 		tail.GetComponent<Tail>().OwnerID = playerID;
+		tail.GetComponent<Tail> ().matnum = matnum;
 		tails.Add(tail);
 		tail.tailNo = tails.Count - 1;
 
@@ -396,21 +403,21 @@ public class DragonBase : MonoBehaviour
 										DashAttack (moves [0], 0);
 						}
 
-						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [1])) {
+						if ((Input.GetButtonDown ("UsePower")) || Input.GetButton (Inputs [1])) {
 								CastMove (0);
 						}
-						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [2])) {
+						if ((Input.GetButtonDown ("UsePower")) || Input.GetButton (Inputs [2])) {
 								CastMove (1);
 						}
-						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [3])) {
+						if ((Input.GetButtonDown ("UsePower")) || Input.GetButton (Inputs [3])) {
 								CastMove (2);
 								//shielded = true;
 						}
-						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [4])) {
+						if ((Input.GetButtonDown ("UsePower")) || Input.GetButton (Inputs [4])) {
 								CastMove (3);
 								//shielded = true;
 						}
-						if ((Input.GetButtonDown ("UsePower") && hasIce) || Input.GetButton (Inputs [5])) {
+						if ((Input.GetButtonDown ("UsePower")) || Input.GetButton (Inputs [5])) {
 								CastMove (4);
 								//shielded = true;
 						}
@@ -961,8 +968,10 @@ public class DragonBase : MonoBehaviour
         GameObject GO =(GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
         Destroy(GO, 2.0f);
 		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color = newcolor;
+		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.SetTexture("_MainTex", mat[4]);
 		yield return new WaitForSeconds(moveData.Cooldown);
 		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.color = oldcolor;
+		transform.GetChild(3).GetChild(0).GetChild(0).renderer.material.SetTexture("_MainTex", mat[matnum]);
 		hasBitePowerup = false;
 		canDash = true;
 	}

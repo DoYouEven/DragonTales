@@ -16,6 +16,8 @@ public class Tail : MonoBehaviour
     public MovementController movementController;
     public Animator anim;
     public bool isBackLeg;
+	public int matnum;
+	public List<Texture> mat;
 	void Start() 
 	{
 		canEat = false;
@@ -23,11 +25,13 @@ public class Tail : MonoBehaviour
 		string playerTag = "Player" + OwnerID.ToString ();
 		player = GameObject.FindGameObjectWithTag (playerTag);
 		// set color
+		transform.GetChild(0).GetChild(0).renderer.material.SetTexture("_MainTex",mat[matnum]);
 		if (OwnerID == 2) {
 			Color colorM = transform.GetChild(0).GetChild(0).renderer.material.color;
 			colorM.r = colorM.r * 0.5f;
 			colorM.b = colorM.b * 1.5f;
 			transform.GetChild(0).GetChild(0).renderer.material.color = colorM;
+
 
 			if (tailNo == 2) {
 				Color colorM2 = transform.GetChild(2).GetChild(0).GetChild(0).renderer.material.color;
@@ -36,7 +40,10 @@ public class Tail : MonoBehaviour
 				transform.GetChild(2).GetChild(0).GetChild(0).renderer.material.color = colorM2;
 			}
 		}
-
+		if (tailNo == 2) {
+			transform.GetChild(2).GetChild(0).GetChild(0).renderer.material.SetTexture("_MainTex",mat[matnum]);
+		}
+		
 		Color color = transform.GetChild(0).GetChild(0).renderer.material.color;
 
 		if (tailNo > 4 && tailNo <= 10) 
