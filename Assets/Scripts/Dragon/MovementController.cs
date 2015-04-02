@@ -31,6 +31,9 @@ public class MovementController : MonoBehaviour
         // restart game
 		if (Input.GetKeyDown("r"))
 			Application.LoadLevel("StartScreen"); 
+		// instant sudden death
+		if (Input.GetKeyDown("s"))
+			Application.LoadLevel("SuddenDeath");
         // temp player 2 controls
         if (tag == "Player1")
             dx =  Mathf.Lerp(dx,Input.GetAxis("Horizontal"),0.5f);// *10f + dx;

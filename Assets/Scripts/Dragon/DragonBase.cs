@@ -123,7 +123,8 @@ public class DragonBase : MonoBehaviour
 		bite = Resources.Load ("Sound/bite") as AudioClip;
 		shootingbeam = Resources.Load ("Sound/shootingbeam") as AudioClip;
 		shield = Resources.Load ("Sound/shield") as AudioClip;
-		dash = Resources.Load ("Sound/dash") as AudioClip;
+		dash = Resources.Load ("Sound/dash2") as AudioClip;
+		fire = Resources.Load ("Sound/fire") as AudioClip;
 
 
         /*for (int i = 0; i < 6; i++)
@@ -478,14 +479,14 @@ public class DragonBase : MonoBehaviour
 			if (hasBitePowerup && ownerID != 0 && ownerID != playerID) {
 				GameObject otherPlayer = GameObject.FindGameObjectWithTag (playerTag);
 				otherPlayer.GetComponent<DragonBase> ().BreakTail(currentTail);
-				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
+				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position, 0.4f);
 				Destroy (hit.gameObject);
 				ExtendTail2();
 			} 
 			
 			// Eat a broken tail piece
 			if (hit.gameObject.GetComponent<Tail>().canEat && !isBreaking) {
-				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
+				AudioSource.PlayClipAtPoint(bite,gameObject.transform.position, 0.4f);
 				Destroy (hit.gameObject);
 				ExtendTail2();
 			} 
@@ -544,7 +545,7 @@ public class DragonBase : MonoBehaviour
 		//****************************
 		if (hit.gameObject.tag == "food")
 		{
-			AudioSource.PlayClipAtPoint(bite,gameObject.transform.position);
+			AudioSource.PlayClipAtPoint(bite,gameObject.transform.position, 0.4f);
 			Destroy (hit.gameObject);
 			ExtendTail2();
 			Spawn.currentTailCount--;
@@ -891,7 +892,7 @@ public class DragonBase : MonoBehaviour
 			break;
 		}
 		IncreaseSpeed(speed);
-		AudioSource.PlayClipAtPoint(dash ,gameObject.transform.position, 0.2f);
+		AudioSource.PlayClipAtPoint(dash ,gameObject.transform.position, 0.5f);
 		Vector3 vel = rigidbody.velocity;
 		yield return new WaitForSeconds(0.6f);
 		ResetSpeed();

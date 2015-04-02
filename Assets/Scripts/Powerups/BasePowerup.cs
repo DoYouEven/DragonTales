@@ -16,7 +16,7 @@ public class BasePowerup : MonoBehaviour {
         //currentMoveMethods[Dash.ID] = DashAttack;
        
 		collect = Resources.Load ("Sound/collect") as AudioClip;
-		Destroy(gameObject, 10);
+		Destroy(gameObject, 25);
         
 	}
 
