@@ -115,15 +115,20 @@ public class CameraController : MonoBehaviour
     void Update()
     {
 		if (player1 != null && player2 != null) {
-        Debug.DrawLine(player1.transform.position, player2.transform.position);
-        target.position = (player1.transform.position + player2.transform.position) / 2;
-        wantedDistance = (player1.transform.position - player2.transform.position).magnitude * ZFactor ;
-        //targetOffset.y = (player1.transform.position - player2.transform.position).magnitude * YFactor;
-        float lerp = Mathf.Lerp(targetOffset.y, (player1.transform.position - player2.transform.position).magnitude * YFactor, YSmoothingFactor);
-        targetOffset.y = Mathf.Clamp(lerp,heightClamp.x,heightClamp.y);
-        RotationVector.x = Mathf.Clamp(lerp, 0.3f, 0.55f);
+       	 	Debug.DrawLine(player1.transform.position, player2.transform.position);
+        	target.position = (player1.transform.position + player2.transform.position) / 2;
+			float dist = Mathf.Abs(player1.transform.position.z - player2.transform.position.z);
+			YFactor = 0.25f + (dist/160);
+			ZFactor = 0.75f + (dist/480);
+			this.camera.fieldOfView = 60 + (dist/20);
+			//Debug.Log(Mathf.Abs(player1.transform.position.z - player2.transform.position.z));
+	        wantedDistance = (player1.transform.position - player2.transform.position).magnitude * ZFactor ;
+	        //targetOffset.y = (player1.transform.position - player2.transform.position).magnitude * YFactor;
+	        float lerp = Mathf.Lerp(targetOffset.y, (player1.transform.position - player2.transform.position).magnitude * YFactor, YSmoothingFactor);
+	        targetOffset.y = Mathf.Clamp(lerp,heightClamp.x,heightClamp.y);
+	        RotationVector.x = Mathf.Clamp(lerp, 0.3f, 0.55f);
 
-        target.transform.localRotation = new Quaternion(0, 1, 0,1);
+	        target.transform.localRotation = new Quaternion(0, 1, 0,1);
 
 
             if (isPlayerControl)
