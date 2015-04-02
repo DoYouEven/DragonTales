@@ -64,6 +64,7 @@ public class DragonBase : MonoBehaviour
 	public AudioClip dash;
 	public AudioClip shield;
 	public AudioClip shootingbeam;
+	public AudioClip fire;
 
 	#region events
 	public  delegate void EventPowerup(MoveData moveData);
@@ -712,7 +713,7 @@ public class DragonBase : MonoBehaviour
     void FireAttack(MoveData moveData, int index)
     {
         GameObject Fire = (GameObject)Instantiate(moveData.VFXPrefab, transform.position + transform.forward * 1.7f + transform.up * 1.5f, transform.rotation);
-		AudioSource.PlayClipAtPoint(shootingbeam,gameObject.transform.position);
+		AudioSource.PlayClipAtPoint(fire,gameObject.transform.position);
         GetComponent<AudioSource>().PlayOneShot(moveData.clip);
         //ice.GetComponent<EffectSettings>().Target.transform.position = ice.transform.position + transform.forward*10;
         Fire.GetComponent<IceBullet>().ownerID = playerID;
